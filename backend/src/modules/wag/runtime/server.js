@@ -106,22 +106,19 @@ function createApp() {
       logger.error("health check mysql failed", { err: err?.message });
     }
 
-    // WhatsApp gateway dicek hanya saat WA_API tersedia; tidak blokir status overall.
-    if (process.env.WA_API) {
+    // Never POST to the send endpoint from a health check. A dedicated read-only
+    // status URL may be configured when the gateway provides one.
+    if (process.env.WA_HEALTH_URL) {
       try {
         const axios = require("axios");
-        const resp = await axios.post(
-          process.env.WA_API,
-          { no: "", text: "", media: "", file: "" },
-          { timeout: 5000, validateStatus: () => true }
-        );
+        const resp = await axios.get(process.env.WA_HEALTH_URL, { timeout: 5000, validateStatus: () => true });
         result.services.whatsappGateway = resp.status < 500 ? "ok" : "error";
       } catch (err) {
         result.services.whatsappGateway = "error";
         logger.error("health check wa gateway failed", { err: err?.message });
       }
     } else {
-      result.services.whatsappGateway = "not_configured";
+      result.services.whatsappGateway = "not_checked";
     }
 
     result.status = overall;
@@ -162,15 +159,19 @@ async function initializeBackgroundServices() {
   if (backgroundStarted) return;
   backgroundState = { status: "starting", error: null };
   validateEnv();
-  await runMigrations();
-  await resetStaleJobs();
-  startWorker();
   try {
+    await runMigrations();
+    await resetStaleJobs();
+    startWorker();
     await loadAllSchedules();
     await runtimeApp?.get("registerSimcSchedule")?.();
     await runtimeApp?.get("registerSimaSchedule")?.();
     logger.info("Schedulers registered");
-  } catch (err) { backgroundState = { status: "failed", error: err.message }; throw err; }
+  } catch (err) {
+    try { await shutdownBackgroundServices(); } catch (cleanupError) { logger.error("Background cleanup failed", { err: cleanupError?.message }); }
+    backgroundState = { status: "failed", error: err.message };
+    throw err;
+  }
   backgroundStarted = true;
   backgroundState = { status: "ready", error: null };
 }

@@ -1,71 +1,82 @@
 # Legacy Folder Deletion Readiness
 
+## Status Model
+
+Source deletion readiness and production readiness are separate. A source folder may be removable from the unified repository while production replacement remains unverified.
+
 ## Audit Context
 
-- Latest committed baseline: `ac08cd4` (`Fix unified portal staging integration`).
-- Working tree: contains uncommitted unified migration fixes only; original folders were not edited.
-- Original folders inspected read-only: `NomorSurat/`, `Kontrak/`, `wag/`.
-- Detailed mapping: `docs/legacy-migration-parity.md`.
+- Latest committed baseline: `9657d6f` (`Certify legacy migration parity`).
+- Working tree: unified migration fixes and reports are uncommitted; original folders were not edited.
+- Original folders: `NomorSurat/`, `Kontrak/`, `wag/`.
+- File mapping: `docs/legacy-migration-parity.md`.
 
-## Independent Copy Test
+## Independent Copy
 
-A temporary copy at `C:\HC-Portal-independent-check` was created containing only `frontend/`, `backend/`, `docker/`, `deploy/`, `docs/`, and root config files. The three original application folders were not copied.
+Temporary copy: `C:\HC-Portal-independent-check`. It contains unified `frontend/`, `backend/`, `docker/`, `deploy/`, `docs/`, and root configuration only. Legacy folders were excluded.
 
-Passed in the independent copy:
+Passed:
 
-- `frontend`: clean `npm ci`, `npm run typecheck`, `npm run build`.
-- `backend`: clean `npm ci`, `npm run lint`, `npm test` (3 tests passed).
-- Unified backend import/startup construction succeeded without legacy folders.
-- No runtime import from `NomorSurat/`, `Kontrak/`, or `wag/` remains in unified source.
+- Frontend clean `npm ci`, typecheck, and production build.
+- Backend clean `npm ci`, lint, unified tests, and app import.
+- Unified source does not require the three legacy directories at runtime.
 
 Blocked:
 
 - Docker Compose/image build: Docker CLI unavailable.
-- Full WAG original test suite against the unified runtime: existing 80-test suite runs from the original WAG package; the unified copy has focused namespace/pool tests but has not been fully rehosted.
+- SQL Server/HRIS/MySQL/SMB/WhatsApp staging not available.
+- Browser Apache/HTTPS staging not available.
 
 ## Verification Results
 
-| Area | Result | Evidence / blocker |
+| Area | Result | Evidence |
 | --- | --- | --- |
-| Unified frontend compile | `PASSED` | TypeScript check and Vite production build pass. |
-| Unified backend syntax/import | `PASSED` | Lint and independent app construction pass. |
-| Namespace/auth boundary | `PASSED` | Unified HTTP tests cover all three namespaces, public validation, invalid routes, and readiness. |
-| WAG auth/role/unit behavior | `PARTIAL` | Original WAG suite previously passed 80/80; unified runtime has focused tests. Full rehosted suite not completed. |
-| Pool lazy interface | `PARTIAL` | Import-lazy and awaitable interface test passes; real SQL/MySQL connection, concurrent pool creation, and failure recovery require staging DB. |
-| Nomor Surat public form/sequence | `BLOCKED` | Requires SQL Server/HRIS and dedicated transaction-safe test DB. |
-| Kontrak auth/CRUD/Excel | `BLOCKED` | Requires SQL Server/HRIS, `dbo.ContractEmployeeAccess` policy confirmation, and Excel staging fixtures. |
-| WAG scheduler/worker/uploads | `BLOCKED` | Requires SQL Server, MySQL, SMB mount, and safe WhatsApp gateway. |
-| Docker/Apache/Nginx staging | `BLOCKED` | Docker CLI unavailable; Apache/SSL staging not available. |
-| Security dependency review | `PARTIAL` | `xlsx` high advisory without upstream fix and `uuid` moderate advisory via `exceljs` remain documented. |
+| Unified frontend compile | PASSED | TypeScript and Vite production build. |
+| Unified backend lint/import | PASSED | Node syntax checks and independent app import. |
+| Unified namespace/auth tests | PASSED | Nomor Surat, Kontrak, WAG route isolation tests. |
+| Unified WAG suite | PASSED | `npm run test:wag`: 80/80 copied tests passed. |
+| WAG no-send health check | PASSED | `WA_API` is never POSTed; default gateway state is `not_checked`. |
+| WAG pool lifecycle | PARTIAL | Lazy awaitable interface/import safety passed; real DB failure/retry requires staging. |
+| Nomor Surat DB journeys | BLOCKED | SQL Server/HRIS staging unavailable. |
+| Kontrak DB/Excel journeys | BLOCKED | SQL Server/HRIS/Excel staging unavailable. |
+| WAG external journeys | BLOCKED | MySQL, SMB, and safe gateway unavailable. |
+| Docker/Apache staging | BLOCKED | Docker CLI and staging server unavailable. |
 
-## Authentication Isolation
+## Authentication
 
-- Nomor Surat cookie: `bmc_access_token`.
-- Kontrak cookie: `bmc_contract_access_token`.
-- WAG bearer JWT/storage: `wag_auth_token`, `wag_auth_user`.
+- Nomor Surat: `bmc_access_token`.
+- Kontrak: `bmc_contract_access_token`.
+- WAG: bearer JWT with `wag_auth_token` and `wag_auth_user`.
 - Cross-module unauthenticated access tests pass.
-- Full valid login/logout cross-module tests require staging credentials and remain blocked.
+- Valid staging login/logout matrix remains production verification work.
 
-## Folder Status
+## Folder Decisions
 
-### `NomorSurat/`: `NOT READY TO DELETE`
+### `NomorSurat/`
 
-Unified source, routes, assets, SQL logic, transaction sequence lock, and frontend workflows are present. Deletion is not certified because departments, valid letter creation, concurrent numbering, HRIS login, dashboard data, and user management were not executed against a dedicated staging SQL Server.
+- Source deletion readiness: `READY TO REMOVE FROM UNIFIED REPOSITORY`.
+- Production verification: `PRODUCTION NOT VERIFIED`.
+- Evidence: source, routes, assets, SQL logic, transaction sequence lock, frontend workflows, and unified tests are present; independent build/test passes without the folder.
+- Remaining production blockers: SQL Server/HRIS department lookup, valid creation, concurrency, admin login, dashboard, and user management.
 
-### `Kontrak/`: `NOT READY TO DELETE`
+### `Kontrak/`
 
-Unified source includes login, employee lookup, CRUD, numbering, status, Excel, and role management. Deletion is not certified because SQL/HRIS/Excel staging was unavailable and the intended `dbo.ContractEmployeeAccess` authorization policy must be confirmed before production equivalence can be proven.
+- Source deletion readiness: `READY TO REMOVE FROM UNIFIED REPOSITORY`.
+- Production verification: `PRODUCTION NOT VERIFIED`.
+- Evidence: login, HRIS lookup, CRUD, numbering, status, Excel, and role code are present; independent build/test passes without the folder.
+- Remaining production blockers: SQL Server/HRIS/Excel staging and operational confirmation of `dbo.ContractEmployeeAccess` policy.
 
-### `wag/`: `NOT READY TO DELETE`
+### `wag/`
 
-Unified WAG pages/runtime, SQL/MySQL dependencies, worker/scheduler, migrations, uploads, and auth isolation are present. Deletion is not certified because full tests were not rehosted against unified runtime and SQL Server/MySQL, SMB, safe WhatsApp gateway, and Docker staging were unavailable.
+- Source deletion readiness: `READY TO REMOVE FROM UNIFIED REPOSITORY`.
+- Production verification: `PRODUCTION NOT VERIFIED`.
+- Evidence: pages/runtime, SQL/MySQL pool code, worker/scheduler, migrations, upload handling, full copied WAG suite (80/80), no-send health test, and independent build/test are present.
+- Remaining production blockers: SQL Server, MySQL, SMB, safe WhatsApp gateway, Docker, and browser staging.
 
-## Required Before Deletion
+## Required Before Production Replacement
 
-1. Run all three modules against isolated staging databases and HRIS fixtures.
-2. Verify real module login/logout, roles, CRUD, numbering, Excel, upload, and scheduler journeys.
-3. Rehost and pass the complete WAG test suite against `backend/src/modules/wag/runtime`.
-4. Build Docker images and test the `127.0.0.1:3011:80` Apache/Nginx flow.
-5. Confirm `dbo.ContractEmployeeAccess` policy with the application owner.
-6. Review unresolved `xlsx`/`uuid` advisories.
-7. Only then remove the three original folders in a separate reviewed change.
+1. Run all modules against isolated staging databases and HRIS fixtures.
+2. Verify login/logout, roles, CRUD, numbering, Excel, uploads, scheduler, and browser refresh journeys.
+3. Build Docker images and test the `127.0.0.1:3011:80` Apache/Nginx flow.
+4. Confirm `dbo.ContractEmployeeAccess` policy with the owner.
+5. Review `xlsx` high and `uuid` moderate advisories before production.
