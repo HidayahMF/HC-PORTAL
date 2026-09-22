@@ -1,6 +1,6 @@
 # Legacy Migration Parity Matrix
 
-Audited against the current workspace at commit `ac08cd4` plus the uncommitted unified-runtime fixes in this worktree. The original directories were treated as read-only. `node_modules`, generated `dist`, temporary build metadata, and package-lock internals are not repeated row-by-row; their dependency parity is recorded by package manifest rows.
+Audited against the pre-removal unified workspace at commit `888dd11`. The original directories were treated as read-only during migration and are now removed from the active repository. `node_modules`, generated `dist`, temporary build metadata, and package-lock internals are not repeated row-by-row; their dependency parity is recorded by package manifest rows.
 
 ## Classification Rules
 
@@ -54,7 +54,7 @@ Audited against the current workspace at commit `ac08cd4` plus the uncommitted u
 | original UI components/layout/utils/assets | `frontend/src/modules/wag/components`, `layouts`, `utils`, `assets` | `MIGRATED_ADAPTED` | Components copied into unified tree; shared Tailwind tokens adapt colors/font. |
 | `backend/server.js`, routes, controllers, services, middleware, migrations | `backend/src/modules/wag/runtime/` | `MIGRATED_ADAPTED` | Runtime is inside unified backend; API is mounted under `/api/wag`; worker/scheduler lifecycle is unified. |
 | SQL Server/MySQL pool modules | `runtime/config/db.js`, `dbMySQL.js` | `MIGRATED_ADAPTED` | Lazy awaitable interfaces, retry-after-failure, no import-time connection, and explicit close helpers added. Real DB pool integration is `UNVERIFIED`. |
-| WAG backend test suite | original `wag/backend/test` | `UNVERIFIED` | Original suite previously passed 80/80, but it executes against the original runtime. Unified runtime has focused pool and namespace tests; a full unified-runtime port of all WAG tests remains required. |
+| WAG backend test suite | `backend/src/modules/wag/runtime/test/` and `backend/test/unit/wag-health.test.js` | `ADAPTED AND VERIFIED` | Full copied suite runs against unified runtime via `npm run test:wag`: 80/80 passed; no-send health test also passes. |
 | uploads, SMB copy, WA API, migrations | runtime config/services/volume | `UNVERIFIED` | Source and Docker volume mapping exist; no staging SMB/WhatsApp gateway/Docker test was possible. |
 | WAG-only Vite/Tailwind/package runtime | root unified frontend config/package | `REPLACED` | One frontend build contains WAG and all modules. |
 
@@ -69,4 +69,4 @@ Audited against the current workspace at commit `ac08cd4` plus the uncommitted u
 
 ## Summary
 
-No original folder is currently deletion-ready. The code and assets are present in unified locations, but SQL Server/HRIS, MySQL, SMB, WhatsApp gateway, Excel, Docker image, and staging browser journeys were not all executable in this environment. `UNVERIFIED` is intentionally used instead of claiming parity from compilation alone.
+The original folders have been removed from the active repository after independent unified build/test verification. Production behavior remains separately unverified because SQL Server/HRIS, MySQL, SMB, WhatsApp gateway, Excel, Docker image, and staging browser journeys were not executable in this environment.

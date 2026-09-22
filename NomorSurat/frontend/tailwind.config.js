@@ -1,2 +1,0 @@
-/** @type {import('tailwindcss').Config} */
-export default { content: ['./index.html', './src/**/*.{ts,tsx}'], theme: { extend: { colors: { bmc: { navy: '#0D1F5C', red: '#0D1F5C', gold: '#D4A843', dark: '#171717', muted: '#6B7A9E', canvas: '#F4F6FC', surface: '#F8F9FD', border: '#DDE1EF', success: '#16A34A', error: '#DC2626', warning: '#D97706' } } } }, plugins: [] };

@@ -1,1 +1,0 @@
-export function audit(event: string, details: Record<string, string | number | undefined> = {}): void { const safe = Object.fromEntries(Object.entries(details).filter(([, value]) => value !== undefined)); console.info(JSON.stringify({ event, at: new Date().toISOString(), ...safe })); }

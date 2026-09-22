@@ -6,9 +6,9 @@ Source deletion readiness and production readiness are separate. A source folder
 
 ## Audit Context
 
-- Latest committed baseline: `9657d6f` (`Certify legacy migration parity`).
+- Latest pre-removal commit: `888dd11` (`Complete unified WAG parity verification`).
 - Working tree: unified migration fixes and reports are uncommitted; original folders were not edited.
-- Original folders: `NomorSurat/`, `Kontrak/`, `wag/`.
+- Historical folders removed in the current deletion commit: `NomorSurat/`, `Kontrak/`, `wag/`.
 - File mapping: `docs/legacy-migration-parity.md`.
 
 ## Independent Copy
@@ -52,23 +52,23 @@ Blocked:
 
 ## Folder Decisions
 
-### `NomorSurat/`
+### `NomorSurat/` (removed)
 
-- Source deletion readiness: `READY TO REMOVE FROM UNIFIED REPOSITORY`.
+- Source deletion readiness: `READY TO REMOVE FROM UNIFIED REPOSITORY` and completed.
 - Production verification: `PRODUCTION NOT VERIFIED`.
 - Evidence: source, routes, assets, SQL logic, transaction sequence lock, frontend workflows, and unified tests are present; independent build/test passes without the folder.
 - Remaining production blockers: SQL Server/HRIS department lookup, valid creation, concurrency, admin login, dashboard, and user management.
 
-### `Kontrak/`
+### `Kontrak/` (removed)
 
-- Source deletion readiness: `READY TO REMOVE FROM UNIFIED REPOSITORY`.
+- Source deletion readiness: `READY TO REMOVE FROM UNIFIED REPOSITORY` and completed.
 - Production verification: `PRODUCTION NOT VERIFIED`.
 - Evidence: login, HRIS lookup, CRUD, numbering, status, Excel, and role code are present; independent build/test passes without the folder.
 - Remaining production blockers: SQL Server/HRIS/Excel staging and operational confirmation of `dbo.ContractEmployeeAccess` policy.
 
-### `wag/`
+### `wag/` (removed)
 
-- Source deletion readiness: `READY TO REMOVE FROM UNIFIED REPOSITORY`.
+- Source deletion readiness: `READY TO REMOVE FROM UNIFIED REPOSITORY` and completed.
 - Production verification: `PRODUCTION NOT VERIFIED`.
 - Evidence: pages/runtime, SQL/MySQL pool code, worker/scheduler, migrations, upload handling, full copied WAG suite (80/80), no-send health test, and independent build/test are present.
 - Remaining production blockers: SQL Server, MySQL, SMB, safe WhatsApp gateway, Docker, and browser staging.

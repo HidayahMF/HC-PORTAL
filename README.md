@@ -19,7 +19,7 @@ frontend: npm run typecheck
 frontend: npm run build
 backend: npm run lint
 backend: npm test
-wag/backend: npm test
+backend: npm run test:wag
 ```
 
 Database-backed login, CRUD, Excel, WhatsApp delivery, uploads, and scheduler behavior require valid non-production credentials and integrations. The repository does not contain those secrets.
@@ -38,7 +38,7 @@ For WAG staging, configure `WAGW_FILE_DIR` to the existing media directory and v
 
 ## Migration and safety
 
-The original `NomorSurat`, `Kontrak`, `wag`, and `portal` directories remain in the repository as rollback/reference copies. Runtime code for the unified backend is under `backend/src/modules`, including compiled JavaScript copies of the Nomor Surat and Kontrak business logic and the WAG runtime. No production schema, numbering history, HRIS, contract, WAG, or migration data is dropped, truncated, or recreated.
+The active HC-PORTAL source is now limited to `frontend/`, `backend/`, `docker/`, `deploy/`, `docs/`, and root configuration. The former legacy application directories have been removed after unified independent build/test verification. Runtime code for the unified backend is under `backend/src/modules`, including the Nomor Surat and Kontrak business logic and the WAG runtime. No production schema, numbering history, HRIS, contract, WAG, or migration data is dropped, truncated, or recreated.
 
 Before production deployment, review the generated Docker image, configure secrets externally, verify SQL Server/MySQL connectivity, test Apache/SSL outside this repository, and take database/application upload backups. Rollback is the previous image/commit plus the original application stack; do not run destructive database rollback commands.
 
