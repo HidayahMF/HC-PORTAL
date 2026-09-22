@@ -25,6 +25,7 @@ const { startWorker, stopWorker, resetStaleJobs } = require("./services/jobQueue
 
 let runtimeApp = null;
 let backgroundStarted = false;
+let backgroundState = { status: "stopped", error: null };
 
 function createApp() {
   const app = express();
@@ -159,16 +160,19 @@ function createApp() {
 
 async function initializeBackgroundServices() {
   if (backgroundStarted) return;
+  backgroundState = { status: "starting", error: null };
   validateEnv();
-  backgroundStarted = true;
-  try { await runMigrations(); } catch (err) { logger.error("Migrations failed", { err: err?.message }); }
-  try { await resetStaleJobs(); startWorker(); } catch (err) { logger.error("Worker startup failed", { err: err?.message }); }
+  await runMigrations();
+  await resetStaleJobs();
+  startWorker();
   try {
     await loadAllSchedules();
     await runtimeApp?.get("registerSimcSchedule")?.();
     await runtimeApp?.get("registerSimaSchedule")?.();
     logger.info("Schedulers registered");
-  } catch (err) { logger.error("Failed to register schedulers", { err: err?.message }); }
+  } catch (err) { backgroundState = { status: "failed", error: err.message }; throw err; }
+  backgroundStarted = true;
+  backgroundState = { status: "ready", error: null };
 }
 
 async function shutdownBackgroundServices() {
@@ -176,7 +180,10 @@ async function shutdownBackgroundServices() {
   runtimeApp?.get("unregisterAllSchedules")?.();
   stopWorker();
   backgroundStarted = false;
+  backgroundState = { status: "stopped", error: null };
 }
+
+function getBackgroundState() { return { ...backgroundState }; }
 
 function startServer() {
   const app = createApp();
@@ -239,4 +246,4 @@ if (require.main === module) {
   startServer();
 }
 
-module.exports = { createApp, startServer, initializeBackgroundServices, shutdownBackgroundServices };
+module.exports = { createApp, startServer, initializeBackgroundServices, shutdownBackgroundServices, getBackgroundState };

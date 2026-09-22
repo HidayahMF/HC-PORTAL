@@ -2,7 +2,8 @@ name: hc-portal
 services:
   frontend:
     build: { context: ., dockerfile: docker/frontend.Dockerfile }
-    ports: ["3000:80"]
+    ports:
+      - "127.0.0.1:3011:80"
     depends_on: [backend]
     restart: unless-stopped
   backend:

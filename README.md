@@ -4,11 +4,13 @@ HC Portal is one React/TypeScript frontend and one Express/JavaScript backend. T
 
 The backend namespaces are `/api/nomor-surat/*`, `/api/kontrak/*`, and `/api/wag/*`. Nomor Surat and Kontrak keep independent HTTP-only cookies. WAG keeps its independent bearer JWT and namespaced browser storage keys (`wag_auth_token`, `wag_auth_user`). No portal login or SSO is used.
 
-## Local development
+## Ports and local development
 
 1. Copy `.env.example` to `.env` and provide the existing SQL Server, MySQL, HRIS, and WhatsApp integration values.
 2. Run `npm install` in `frontend` and `backend`.
 3. Run `npm run dev` in `frontend` and `backend` in separate terminals.
+
+The local frontend is `http://localhost:3011`. Vite listens on port `3011` and proxies `/api/*` to the local Express backend on port `3000`. The backend itself remains on port `3000`.
 
 Useful checks:
 
@@ -24,9 +26,15 @@ Database-backed login, CRUD, Excel, WhatsApp delivery, uploads, and scheduler be
 
 ## Docker and proxy
 
-Run `docker compose up --build`. The frontend Nginx serves the SPA and forwards `/api/*` to the internal `backend:3000` service. Only the frontend port is published. Apache should proxy the HTTPS virtual host to the frontend container using `deploy/apache/hc.bmc.co.id.conf`.
+Run `docker compose up --build`. The frontend Nginx is published only on `127.0.0.1:3011` and forwards `/api/*` to the internal `backend:3000` service. Apache should proxy the HTTPS virtual host to `127.0.0.1:3011` using `deploy/apache/hc.bmc.co.id.conf`. The backend remains Docker-internal with `expose: 3000`.
+
+The browser-facing API paths are `/api/nomor-surat/*`, `/api/kontrak/*`, and `/api/wag/*`. `VITE_API_BASE_URL` is optional; WAG defaults to the same-origin `/api/wag` path and must not be set to a Docker hostname.
+
+Readiness is exposed at `/readyz`: HTTP server availability is reported by `/health`, while `/readyz` returns `503` until the shared database and WAG background services are ready.
 
 WAG background migrations, queue worker, and schedulers are initialized once by the unified backend process and stopped during graceful shutdown. Uploads use the `wagw_uploads` volume; SMB/media integration still requires the environment values and mounted path documented in `.env.example`.
+
+For WAG staging, configure `WAGW_FILE_DIR` to the existing media directory and validate the `WAGW_SMB_MOUNT` host path before testing uploads. Do not point either value at production data during local tests.
 
 ## Migration and safety
 

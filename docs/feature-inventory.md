@@ -18,3 +18,10 @@
 - `/wag/*` -> existing WAG pages using `/api/wag/*`; the backend adapter strips the public module prefix and restores WAG's internal `/api/*` routes.
 
 The original application directories remain available for rollback and comparison. No production tables, numbering history, or uploaded production data are modified by this migration.
+
+## Staging Ports
+
+- Local Vite frontend: `3011`.
+- Docker frontend host binding: `127.0.0.1:3011:80`.
+- Express backend: Docker-internal port `3000`.
+- Apache example forwards HTTPS traffic to `127.0.0.1:3011`.

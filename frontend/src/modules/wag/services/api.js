@@ -1,19 +1,12 @@
 import axios from "axios";
 
-// Tidak ada lagi fallback IP internal. URL backend WAJIB berasal dari
-// VITE_API_BASE_URL. Di production, build gagal jelas jika tidak dikonfigurasi.
+// Same-origin is the default for both Vite and the production reverse proxy.
 function resolveApiBaseUrl() {
   const envUrl = import.meta.env.VITE_API_BASE_URL;
   if (envUrl && typeof envUrl === "string" && envUrl.trim()) {
     return envUrl.trim().replace(/\/+$/, "");
   }
-  if (import.meta.env.PROD) {
-    throw new Error(
-      "VITE_API_BASE_URL wajib dikonfigurasi untuk production build. " +
-        "Setel di frontend/.env atau environment build (lihat docs/DEPLOYMENT.md)."
-    );
-  }
-  // Development: path relatif (di-proxy ke backend oleh vite.config.js).
+  // The browser must never receive an internal Docker hostname.
   return "/api/wag";
 }
 

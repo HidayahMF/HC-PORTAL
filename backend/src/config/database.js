@@ -1,3 +1,3 @@
 const sql=require('mssql'); const {env}=require('./env');
 const config={server:process.env.DB_SERVER,database:process.env.DB_DATABASE,user:process.env.DB_USER,password:process.env.DB_PASSWORD,port:Number(process.env.DB_PORT||1433),options:{encrypt:process.env.DB_ENCRYPT==='true',trustServerCertificate:process.env.DB_TRUST_SERVER_CERTIFICATE!=='false'},pool:{max:10,min:0,idleTimeoutMillis:30000}};
-let poolPromise; function getPool(){if(!poolPromise) poolPromise=new sql.ConnectionPool(config).connect();return poolPromise} module.exports={sql,config,getPool,env};
+let poolPromise; function getPool(){if(!poolPromise) poolPromise=new sql.ConnectionPool(config).connect();return poolPromise} async function closePool(){if(poolPromise){const pool=await poolPromise.catch(()=>null);if(pool) await pool.close();poolPromise=undefined}} module.exports={sql,config,getPool,closePool,env};
