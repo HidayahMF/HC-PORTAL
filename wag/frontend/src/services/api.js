@@ -14,7 +14,7 @@ function resolveApiBaseUrl() {
     );
   }
   // Development: path relatif (di-proxy ke backend oleh vite.config.js).
-  return "/api";
+  return "/wag/api";
 }
 
 const API = axios.create({
@@ -39,7 +39,7 @@ API.interceptors.response.use(
       localStorage.removeItem("auth_token");
       localStorage.removeItem("auth_user");
       // Redirect is handled by ProtectedRoute, but we trigger a hard navigation too.
-      window.location.href = "/login";
+      window.location.href = "/wag/login";
     }
     return Promise.reject(error);
   }

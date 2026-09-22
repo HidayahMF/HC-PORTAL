@@ -30,7 +30,7 @@ export default class ErrorBoundary extends Component {
             <button
               onClick={() => {
                 this.setState({ hasError: false, error: null });
-                window.location.href = "/";
+                window.location.href = "/wag/";
               }}
               className="h-10 rounded-lg bg-brand px-6 text-sm font-semibold text-white transition-colors duration-150 hover:bg-brand-hover"
             >

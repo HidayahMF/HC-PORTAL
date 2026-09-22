@@ -1,0 +1,2 @@
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'; import PortalHome from './pages/PortalHome'; import { nomorSuratRoutes } from './modules/nomor-surat/routes'; import { kontrakRoutes } from './modules/kontrak/routes'; import { wagRoutes } from './modules/wag/routes';
+const router=createBrowserRouter([{path:'/',element:<PortalHome/>},nomorSuratRoutes,kontrakRoutes,wagRoutes]); export default function App(){return <RouterProvider router={router}/>}

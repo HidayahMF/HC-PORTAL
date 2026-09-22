@@ -1,6 +1,6 @@
 import type { AuthUser, Contract, Employee, ManagedUser, Page, Summary, Role } from './types';
 
-const base = import.meta.env.VITE_API_URL ?? '/api';
+const base = import.meta.env.VITE_API_URL ?? '/kontrak/api';
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`${base}${path}`, {

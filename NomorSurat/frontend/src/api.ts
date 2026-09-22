@@ -1,5 +1,5 @@
 import { HrisEmployee, Letter, LetterType, ManagedUser, Page, Summary } from './types';
-const base = import.meta.env.VITE_API_URL ?? '/api';
+const base = import.meta.env.VITE_API_URL ?? '/nomor-surat/api';
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`${base}${path}`, {
     credentials: 'include',

@@ -8,6 +8,7 @@ RUN npm install
 
 COPY . .
 
+ENV VITE_API_BASE_URL=/wag/api
 RUN npm run build
 
 ENV TZ=Asia/Jakarta

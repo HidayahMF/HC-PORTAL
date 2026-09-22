@@ -1,0 +1,1 @@
+function notFound(_req,res){res.status(404).json({success:false,message:'Route tidak ditemukan.'})} function errorHandler(err,_req,res,_next){console.error(err);res.status(err.status||500).json({success:false,message:err.status?err.message:'Server sedang mengalami gangguan.'})} module.exports={notFound,errorHandler};
