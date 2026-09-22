@@ -47,7 +47,7 @@ export function ContractDetail() {
     setDeleting(true);
     try {
       await api.remove(item.id);
-      navigate("/dashboard");
+      navigate("../dashboard");
     } catch (caught) {
       setError(
         caught instanceof Error ? caught.message : "Kontrak gagal dihapus.",

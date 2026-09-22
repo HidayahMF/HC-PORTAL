@@ -1,1 +1,0 @@
-import { Link } from 'react-router-dom'; export default function New(){return <div className="border border-bmc-border bg-white p-8"><h1 className="text-2xl font-bold text-bmc-primary">Input Kontrak</h1><p className="mt-2 text-sm text-bmc-muted">Form kontrak berada dalam modul Kontrak Karyawan.</p><Link to=".." className="btn-secondary mt-6">Kembali</Link></div>}

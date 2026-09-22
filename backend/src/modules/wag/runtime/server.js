@@ -3,7 +3,7 @@ const { validateEnv } = require("./config/env");
 const express = require("express");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
-const { mysqlPool } = require("./config/dbMySQL");
+const { mysqlPool, closePool: closeMySqlPool, isInitialized: isMySqlInitialized } = require("./config/dbMySQL");
 
 const logger = require("./utils/logger");
 const { isProd, getAllowedOrigins } = require("./config/env");
@@ -19,7 +19,7 @@ const { createSimcScheduler } = require("./services/simcSchedulerService");
 const { createSimController } = require("./controllers/simcController");
 const { holidaysRouter } = require("./routes/holidaysRoutes");
 const { monitoringRouter } = require("./routes/monitoringRoutes");
-const { poolPromise } = require("./config/db");
+const { poolPromise, closePool: closeSqlPool, isInitialized: isSqlInitialized } = require("./config/db");
 const { runMigrations } = require("./migrations/runner");
 const { startWorker, stopWorker, resetStaleJobs } = require("./services/jobQueueService");
 
@@ -211,20 +211,10 @@ function startServer() {
     // 2. Tutup HTTP server (tunggu request yang sedang berjalan).
     server.close(async () => {
       // 3. Tutup pool database.
-      try {
-        const pool = await poolPromise;
-        await pool.close();
-        logger.info("SQL Server pool closed");
-      } catch (err) {
-        logger.error("Error closing SQL Server pool", { err: err?.message });
-      }
-      try {
-        const mpool = await mysqlPool;
-        await mpool.end();
-        logger.info("MySQL pool closed");
-      } catch (err) {
-        logger.error("Error closing MySQL pool", { err: err?.message });
-      }
+      try { if (isSqlInitialized()) await closeSqlPool(); logger.info("SQL Server pool closed"); }
+      catch (err) { logger.error("Error closing SQL Server pool", { err: err?.message }); }
+      try { if (isMySqlInitialized()) await closeMySqlPool(); logger.info("MySQL pool closed"); }
+      catch (err) { logger.error("Error closing MySQL pool", { err: err?.message }); }
       process.exit(0);
     });
 

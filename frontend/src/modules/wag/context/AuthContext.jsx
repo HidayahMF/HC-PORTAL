@@ -42,7 +42,7 @@ export function AuthProvider({ children }) {
             localStorage.setItem(TOKEN_KEY, jwtToken);
             localStorage.setItem(USER_KEY, JSON.stringify(userData || null));
 
-            navigate("/", { replace: true });
+            navigate("/wag", { replace: true });
             return res.data;
         } finally {
             setLoading(false);
@@ -54,7 +54,7 @@ export function AuthProvider({ children }) {
         setUser(null);
         localStorage.removeItem(TOKEN_KEY);
         localStorage.removeItem(USER_KEY);
-        navigate("/login", { replace: true });
+        navigate("/wag/login", { replace: true });
     };
 
     // Optional: verify profile on app start

@@ -24,15 +24,29 @@ const config = {
 
 let _pool = null;
 let _poolPromise = null;
-const poolPromise = new Proxy({}, { get(_target, property) { if (!_poolPromise) _poolPromise = connect(); return _poolPromise.then(pool => pool[property]); } });
+function getPoolPromise() {
+  if (!_poolPromise) {
+    _poolPromise = connect().catch((error) => { _poolPromise = null; throw error; });
+  }
+  return _poolPromise;
+}
+const poolPromise = {
+  then(resolve, reject) { return getPoolPromise().then(resolve, reject); },
+  catch(reject) { return getPoolPromise().catch(reject); },
+  finally(callback) { return getPoolPromise().finally(callback); },
+};
 async function connect() {
   if (_pool) return _pool;
   try { _pool = await new sql.ConnectionPool(config).connect(); console.log("SQL Server Connected"); return _pool; }
   catch (err) { console.error("SQL Server connection error:", err?.message); throw err; }
 }
+async function closePool() { if (_pool) { await _pool.close(); _pool = null; } _poolPromise = null; }
+function isInitialized() { return Boolean(_pool); }
 
 module.exports = {
   sql,
   poolPromise,
-  getPool: connect,
+  getPool: getPoolPromise,
+  closePool,
+  isInitialized,
 };

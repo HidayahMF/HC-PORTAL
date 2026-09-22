@@ -16,11 +16,23 @@ const mysqlConfig = {
 
 let _pool = null;
 let _poolPromise = null;
-const mysqlPool = new Proxy({}, { get(_target, property) { if (!_poolPromise) _poolPromise = connect(); return _poolPromise.then(pool => pool[property]); } });
+function getPoolPromise() {
+  if (!_poolPromise) {
+    _poolPromise = connect().catch((error) => { _poolPromise = null; throw error; });
+  }
+  return _poolPromise;
+}
+const mysqlPool = {
+  then(resolve, reject) { return getPoolPromise().then(resolve, reject); },
+  catch(reject) { return getPoolPromise().catch(reject); },
+  finally(callback) { return getPoolPromise().finally(callback); },
+};
 async function connect() {
   if (_pool) return _pool;
   try { _pool = mysql.createPool(mysqlConfig); const conn = await _pool.getConnection(); console.log("MySQL Connected"); conn.release(); return _pool; }
   catch (err) { console.error("MySQL connection error:", err?.message); throw err; }
 }
+async function closePool() { if (_pool) { await _pool.end(); _pool = null; } _poolPromise = null; }
+function isInitialized() { return Boolean(_pool); }
 
-module.exports = { mysqlPool, getPool: connect };
+module.exports = { mysqlPool, getPool: getPoolPromise, closePool, isInitialized };

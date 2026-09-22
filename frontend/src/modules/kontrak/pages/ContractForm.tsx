@@ -100,7 +100,7 @@ export function ContractForm() {
             contractNumber: contractNumber || undefined,
           })
         : await api.create(input);
-      if (edit) navigate(`/contracts/${id}`);
+      if (edit) navigate(`../contracts/${id}`);
       else setCreated(value);
     } catch (caught) {
       setError(
@@ -156,7 +156,7 @@ export function ContractForm() {
             </div>
           </dl>
           <button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("../dashboard")}
             className="btn-primary mt-6"
           >
             Kembali ke Dashboard
