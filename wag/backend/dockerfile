@@ -1,0 +1,24 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# tzdata agar TZ=Asia/Jakarta (dari compose) diterapkan ke proses Node.
+RUN apk add --no-cache tzdata
+
+# Install hanya dependency produksi (package-lock.json dipakai → npm ci).
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+COPY . .
+
+# Non-root user (uid 1000 = umumnya pemilik volume SMB host; lihat docs/FIX_REPORT.md).
+RUN addgroup -S app && adduser -S -G app app \
+  && mkdir -p /app/uploads \
+  && chown -R app:app /app
+
+USER app
+
+EXPOSE 5002
+
+# node sebagai PID 1 → menerima SIGTERM/SIGINT langsung; server.js menangani graceful shutdown.
+CMD ["node", "server.js"]
