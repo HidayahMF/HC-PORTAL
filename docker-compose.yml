@@ -24,4 +24,18 @@ services:
       MYSQL_USER: ${MYSQL_USER:-}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-}
+      ALLOWED_NIPS: ${ALLOWED_NIPS:?ALLOWED_NIPS is required}
+      ALLOWED_ADMIN_NIPS: ${ALLOWED_ADMIN_NIPS:-}
+      ALLOWED_VIEWER_NIPS: ${ALLOWED_VIEWER_NIPS:-}
+      WA_API: ${WA_API:?WA_API is required}
+      WAGW_API: ${WAGW_API:-}
+      WAGW_FILE_DIR: ${WAGW_FILE_DIR:-}
+      WAGW_SMB_MOUNT: ${WAGW_SMB_MOUNT:-/mnt/wagw}
+      CORS_ORIGIN: ${CORS_ORIGIN:-https://hc.bmc.co.id}
+    volumes:
+      - wagw_uploads:/app/src/modules/wag/runtime/uploads
+      - ${WAGW_SMB_MOUNT:-/mnt/wagw}:/mnt/wagw
     restart: unless-stopped
+
+volumes:
+  wagw_uploads:
