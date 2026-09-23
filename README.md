@@ -10,7 +10,9 @@ The backend namespaces are `/api/nomor-surat/*`, `/api/kontrak/*`, and `/api/wag
 2. Run `npm install` in `frontend` and `backend`.
 3. Run `npm run dev` in `frontend` and `backend` in separate terminals.
 
-The local frontend is `http://localhost:3011`. Vite listens on port `3011` and proxies `/api/*` to the local Express backend on port `3000`. The backend itself remains on port `3000`.
+The local frontend is `http://localhost:5173`. Vite listens on port `5173` and proxies `/api/*` to the local Express backend on port `3000`. Docker publishes the built frontend separately on `127.0.0.1:3011`.
+
+Module login pages are `/nomor-surat/login`, `/kontrak/login`, and `/wag/login`. The convenience URL `/login` redirects to `/wag/login`.
 
 Useful checks:
 
@@ -23,6 +25,8 @@ backend: npm run test:wag
 ```
 
 Database-backed login, CRUD, Excel, WhatsApp delivery, uploads, and scheduler behavior require valid non-production credentials and integrations. The repository does not contain those secrets.
+
+For local backend development, copy `.env.example` to `backend/.env` and replace every `change-me` value with non-production credentials. Set a random `JWT_SECRET` with at least 32 characters, working SQL Server credentials, `ALLOWED_NIPS`, and the WAG environment values before starting the backend with `npm run dev` from `backend`. Docker Compose reads the root `.env` instead.
 
 ## Docker and proxy
 

@@ -183,10 +183,14 @@ export default function LoginPage() {
                             </div>
                         )}
 
-                        <Button type="submit" size="lg" fullWidth loading={submitting} icon="logout" className="!rounded-xl">
+                    <Button type="submit" size="lg" fullWidth loading={submitting} icon="logout" className="!rounded-xl">
                             {submitting ? "Memproses..." : "Masuk"}
                         </Button>
                     </form>
+
+                    <a href="/" className="mt-4 block text-center text-xs font-medium text-txt-muted transition-colors hover:text-txt">
+                        Kembali ke Dashboard
+                    </a>
 
                     <p className="mt-8 text-center text-xs text-txt-muted">Sesi terenkripsi • Tidak ada fitur register</p>
                 </div>

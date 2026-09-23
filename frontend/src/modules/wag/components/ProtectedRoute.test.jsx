@@ -10,7 +10,7 @@ function renderWithAuth(isAuthenticated, children) {
       <AuthContext.Provider value={{ isAuthenticated, user: null, logout: () => {} }}>
         <Routes>
           <Route path="/" element={<ProtectedRoute>{children}</ProtectedRoute>} />
-          <Route path="/login" element={<div>Halaman Login</div>} />
+          <Route path="/wag/login" element={<div>Halaman Login</div>} />
         </Routes>
       </AuthContext.Provider>
     </MemoryRouter>
@@ -18,7 +18,7 @@ function renderWithAuth(isAuthenticated, children) {
 }
 
 describe("ProtectedRoute", () => {
-  it("redirect ke /login saat tidak terautentikasi", () => {
+    it("redirect ke /wag/login saat tidak terautentikasi", () => {
     renderWithAuth(false, <div>Konten Terproteksi</div>);
     expect(screen.getByText("Halaman Login")).toBeInTheDocument();
     expect(screen.queryByText("Konten Terproteksi")).not.toBeInTheDocument();

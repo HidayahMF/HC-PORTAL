@@ -163,7 +163,7 @@ export function ContractDetail() {
           {deleting ? "Menghapus..." : "Hapus"}
         </button>
         <Link
-          to={`/contracts/${item.id}/edit`}
+                          to={`/kontrak/contracts/${item.id}/edit`}
           className="btn-primary justify-center text-sm font-semibold"
         >
           <Edit size={16} />

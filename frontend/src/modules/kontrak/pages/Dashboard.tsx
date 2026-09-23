@@ -307,7 +307,7 @@ export function Dashboard() {
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2">
                         <Link
-                          to={`/contracts/${item.id}`}
+                          to={`/kontrak/contracts/${item.id}`}
                           className="btn-secondary"
                         >
                           <Eye size={15} />

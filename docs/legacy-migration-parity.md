@@ -24,7 +24,7 @@ Audited against the pre-removal unified workspace at commit `888dd11`. The origi
 | `frontend/src/pages/UserManagement.tsx` | `frontend/src/modules/nomor-surat/pages/UserManagement.tsx` | `MIGRATED_ADAPTED` | Role-aware API calls and UI migrated. DB/role journey `UNVERIFIED`. |
 | `frontend/src/components/{Layout,AuthGuard,States}.tsx` | `frontend/src/modules/nomor-surat/components/` | `MIGRATED_ADAPTED` | Shared unified styling and route-relative navigation added. |
 | `frontend/src/assets/*`, Inter font | `frontend/src/modules/nomor-surat/assets/*` and unified CSS | `MIGRATED_IDENTICAL` | Logo and font are bundled by the unified build. |
-| `frontend/vite.config.*`, Tailwind/PostCSS | root `frontend/vite.config.ts`, `tailwind.config.js`, `postcss.config.js` | `REPLACED` | One Vite/Tailwind pipeline, port `3011`, unified `/api` proxy. |
+| `frontend/vite.config.*`, Tailwind/PostCSS | root `frontend/vite.config.ts`, `tailwind.config.js`, `postcss.config.js` | `REPLACED` | One Vite/Tailwind pipeline, local port `5173`, Docker port `3011`, unified `/api` proxy. |
 | `backend/src/app.ts` | `backend/src/modules/legacy-nomor/app.js` | `MIGRATED_ADAPTED` | TypeScript source compiled to JavaScript and mounted under `/api/nomor-surat`; original middleware/services retained. |
 | `backend/src/services/{letterService,authService,userAccessService}.ts` | corresponding `backend/src/modules/legacy-nomor/services/*.js` | `MIGRATED_ADAPTED` | SQL queries, transaction sequence lock, roles, and validation copied from compiled source. Live SQL evidence unavailable. |
 | `backend/src/config/database.ts` | `backend/src/config/database.js` shared pool | `MIGRATED_ADAPTED` | Unified SQL pool replaces duplicate module pools. |
