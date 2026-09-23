@@ -1,2 +1,25 @@
 @font-face{font-family:Inter;src:url('./assets/fonts/Inter-Variable-Latin.woff2') format('woff2');font-weight:100 900;font-display:swap}@tailwind base;@tailwind components;@tailwind utilities;*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:#F4F6FC;color:#171717}@layer components{.field{@apply w-full border border-bmc-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-bmc-primary focus:ring-2 focus:ring-bmc-primary/10}.btn{@apply inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold transition disabled:pointer-events-none disabled:opacity-60}.btn-primary{@apply btn bg-bmc-primary text-white hover:bg-bmc-hover}.btn-secondary{@apply btn border border-bmc-border bg-white text-bmc-ink hover:bg-bmc-surface}.skeleton{@apply relative overflow-hidden rounded-md bg-slate-200/70}.skeleton::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);background-size:400px 100%;animation:shimmer 1.6s linear infinite}}
 @keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+@layer components{
+  .portal-shell{@apply min-h-screen bg-[#f5f7fb] text-bmc-ink}
+  .portal-header{@apply border-b border-slate-200 bg-white}
+  .portal-header-inner{@apply mx-auto flex h-[76px] w-full max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-10}
+  .portal-brand{@apply inline-flex items-center gap-3 rounded-lg outline-none transition-opacity hover:opacity-85 focus-visible:ring-2 focus-visible:ring-bmc-primary focus-visible:ring-offset-4}
+  .portal-brand img{@apply h-9 w-auto max-w-[178px] object-contain sm:h-10 sm:max-w-[205px]}
+  .portal-brand-divider{@apply h-7 w-px bg-slate-300}
+  .portal-brand-name{@apply text-base font-bold tracking-[-.02em] text-bmc-primary sm:text-lg}
+  .portal-header-context{@apply text-xs font-semibold tracking-[.02em] text-slate-500 sm:text-sm}
+  .portal-main{@apply mx-auto w-full max-w-7xl px-5 pb-14 pt-11 sm:px-8 sm:pt-14 lg:px-10 lg:pt-16}
+  .portal-heading{@apply min-w-0}
+  .portal-heading h1{@apply text-3xl font-bold tracking-[-.04em] text-bmc-primary sm:text-4xl}
+  .portal-heading>p:last-child{@apply mt-2 text-sm leading-6 text-bmc-muted sm:text-base}
+  .portal-grid{@apply mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3}
+  .portal-card{@apply relative flex min-h-[348px] cursor-pointer flex-col rounded-xl border border-slate-200 bg-white p-5 outline-none transition duration-200 hover:border-bmc-primary/30 hover:shadow-[0_10px_24px_rgba(13,31,92,0.07)] focus-visible:border-bmc-primary focus-visible:ring-2 focus-visible:ring-bmc-primary focus-visible:ring-offset-2 sm:min-h-[360px] sm:p-6}
+  .portal-card-visual{@apply flex h-[150px] items-center justify-center overflow-hidden rounded-lg bg-slate-50/80 transition duration-200 group-hover:bg-blue-50/60}
+  .portal-card-visual img{@apply h-full w-full object-contain p-2 transition duration-200 group-hover:-translate-y-0.5}
+  .portal-card-copy{@apply mt-6 flex min-w-0 flex-1 flex-col}
+  .portal-card-name{@apply text-lg font-bold leading-7 text-bmc-primary sm:text-xl}
+  .portal-card-description{@apply mt-1.5 max-w-[290px] text-sm leading-6 text-slate-500}
+  .portal-card-action{@apply mt-6 inline-flex items-center gap-1.5 text-xs font-bold tracking-[.04em] text-bmc-primary transition-colors group-hover:text-bmc-hover}
+}
+@media (prefers-reduced-motion: reduce){.portal-card,.portal-card-icon,.portal-card-arrow,.portal-brand{transition:none}.portal-card:hover{transform:none}.portal-card-arrow{transform:none}}

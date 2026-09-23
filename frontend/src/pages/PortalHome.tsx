@@ -1,3 +1,66 @@
-import { ArrowUpRight, FileText, MessageCircle, NotebookTabs } from 'lucide-react'; import { Link } from 'react-router-dom'; import logo from '../modules/nomor-surat/assets/logobmcbg1.png';
-const cards=[['Nomor Surat','Pengajuan dan monitoring nomor surat.','/nomor-surat/',FileText],['Kontrak Karyawan','Pengelolaan dan monitoring kontrak karyawan.','/kontrak/',NotebookTabs],['WhatsApp Gateway','Monitoring SIM, broadcast, dan jadwal pesan.','/wag/',MessageCircle]] as const;
-export default function PortalHome(){return <div className="min-h-screen bg-bmc-canvas"><header className="border-b border-bmc-border bg-white"><div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5 lg:px-8"><Link to="/" className="flex items-center gap-3"><img src={logo} alt="Braja Mukti Cakra" className="h-10 w-auto max-w-[210px] object-contain"/></Link><a href="https://bmc.co.id" target="_blank" rel="noreferrer" className="btn-secondary rounded-full">Visit Site <ArrowUpRight size={15}/></a></div></header><main className="mx-auto max-w-6xl px-6 pb-20 pt-16 lg:px-8 lg:pt-24"><p className="text-xs font-bold uppercase tracking-[.25em] text-bmc-gold">Services</p><h1 className="mt-5 text-4xl font-bold tracking-[-.04em] text-bmc-primary sm:text-6xl">Everything you need.</h1><p className="mt-5 max-w-xl text-lg leading-8 text-bmc-muted">A centralized platform for all your operational needs.</p><section className="mt-14 grid gap-5 md:grid-cols-3">{cards.map(([name,desc,to,Icon])=><Link to={to} key={name} className="group flex min-h-64 flex-col justify-between border border-bmc-border bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"><div><div className="flex items-center justify-between"><span className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-bmc-primary transition group-hover:bg-bmc-primary group-hover:text-white"><Icon size={23}/></span><ArrowUpRight size={18} className="text-slate-300 group-hover:text-bmc-primary"/></div><h2 className="mt-9 text-xl font-bold text-bmc-primary">{name}</h2><p className="mt-2 text-sm leading-6 text-bmc-muted">{desc}</p></div><span className="text-[11px] font-bold uppercase tracking-[.16em] text-slate-400">Open module</span></Link>)}</section><p className="mt-12 text-sm text-bmc-muted">Setiap modul menggunakan akun, session, dan hak aksesnya sendiri.</p></main></div>}
+import { useEffect } from 'react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+import { ArrowUpRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import logo from '../assets/logobmcwithprecision.png';
+import nomorSuratLogo from '../assets/NomorSurat (2).png';
+import nomorKontrakLogo from '../assets/NomorKontrak.png';
+import waGatewayLogo from '../assets/WaGateway.png';
+
+type PortalCard = {
+  name: string;
+  description: string;
+  route: string;
+  logo: string;
+};
+
+const cards: PortalCard[] = [
+  { name: 'Nomor Surat', description: 'Pengajuan dan monitoring nomor surat.', route: '/nomor-surat/', logo: nomorSuratLogo },
+  { name: 'Kontrak Karyawan', description: 'Pengelolaan dan monitoring kontrak karyawan.', route: '/kontrak/', logo: nomorKontrakLogo },
+  { name: 'WhatsApp Gateway', description: 'Monitoring SIM, broadcast, dan jadwal pesan.', route: '/wag/', logo: waGatewayLogo },
+];
+
+export default function PortalHome() {
+  useEffect(() => {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    AOS.init({ duration: reducedMotion ? 0 : 650, easing: 'ease-out-cubic', once: true, offset: reducedMotion ? 0 : 24, disable: reducedMotion });
+    return () => AOS.refreshHard();
+  }, []);
+
+  return (
+    <div className="portal-shell">
+      <header className="portal-header" data-aos="fade-down" data-aos-duration="500">
+        <div className="portal-header-inner">
+          <Link to="/" className="portal-brand" aria-label="HC Portal dashboard">
+            <img src={logo} alt="Braja Mukti Cakra" />
+            <span className="portal-brand-divider" aria-hidden="true" />
+            <span className="portal-brand-name">HC Portal</span>
+          </Link>
+        </div>
+      </header>
+
+      <main className="portal-main">
+        <section className="portal-heading" aria-labelledby="portal-title" data-aos="fade-up" data-aos-delay="100">
+          <h1 id="portal-title">Aplikasi</h1>
+          <p>Pilih layanan yang ingin Anda gunakan.</p>
+        </section>
+
+        <section className="portal-grid" aria-label="Aplikasi HC Portal">
+          {cards.map(({ name, description, route, logo: cardLogo }, index) => (
+            <Link to={route} className="portal-card group" key={name} data-aos="fade-up" data-aos-delay={150 + index * 100}>
+              <span className="portal-card-visual">
+                <img src={cardLogo} alt={`${name} illustration`} />
+              </span>
+              <span className="portal-card-copy">
+                <span className="portal-card-name">{name}</span>
+                <span className="portal-card-description">{description}</span>
+              </span>
+              <span className="portal-card-action">Buka aplikasi <ArrowUpRight size={16} strokeWidth={2} aria-hidden="true" /></span>
+            </Link>
+          ))}
+        </section>
+      </main>
+    </div>
+  );
+}
