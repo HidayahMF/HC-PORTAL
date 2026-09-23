@@ -1,4 +1,4 @@
-import { Outlet, RouteObject } from 'react-router-dom';
+import { Navigate, Outlet, RouteObject } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -21,6 +21,6 @@ export const wagRoutes: RouteObject = {
   element: <WAGProvider />,
   children: [
     { path: 'login', element: <LoginPage /> },
-    { element: <ProtectedLayout />, children: [{ index: true, element: <Dashboard /> }, { path: 'monitoring', element: <MonitoringSimPage /> }, { path: 'broadcast', element: <BroadcastPage /> }, { path: 'scheduled', element: <ScheduledMessagesPage /> }, { path: 'simc', element: <SimcPage type="simc" /> }, { path: 'sima', element: <SimcPage type="sima" /> }, { path: 'holidays', element: <HolidaysPage /> }, { path: 'profile', element: <ProfilePage /> }] },
+    { element: <ProtectedLayout />, children: [{ index: true, element: <Dashboard /> }, { path: 'monitoring', element: <MonitoringSimPage /> }, { path: 'broadcast', element: <BroadcastPage /> }, { path: 'scheduled', element: <ScheduledMessagesPage /> }, { path: 'simc', element: <SimcPage type="simc" /> }, { path: 'sima', element: <SimcPage type="sima" /> }, { path: 'holidays', element: <HolidaysPage /> }, { path: 'profile', element: <ProfilePage /> }, { path: '*', element: <Navigate to="/wag" replace /> }] },
   ],
 };

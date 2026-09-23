@@ -90,9 +90,9 @@ function SystemStatusCard({ health, loading, onRetry }) {
 }
 
 const QUICK_ACTIONS = [
-    { to: "/broadcast", label: "Broadcast", desc: "Kirim pesan massal", icon: "send" },
-    { to: "/scheduled", label: "Buat Jadwal", desc: "Pesan otomatis terjadwal", icon: "calendar-clock" },
-    { to: "/monitoring", label: "Monitoring SIM", desc: "Pantau masa berlaku SIM", icon: "monitoring" },
+    { to: "/wag/broadcast", label: "Broadcast", desc: "Kirim pesan massal", icon: "send" },
+    { to: "/wag/scheduled", label: "Buat Jadwal", desc: "Pesan otomatis terjadwal", icon: "calendar-clock" },
+    { to: "/wag/monitoring", label: "Monitoring SIM", desc: "Pantau masa berlaku SIM", icon: "monitoring" },
 ];
 
 export default function Dashboard() {
@@ -274,7 +274,7 @@ export default function Dashboard() {
                     <h2 id="recent-schedules" className="text-sm font-bold uppercase tracking-widest text-txt-muted">
                         Jadwal Pesan Terbaru
                     </h2>
-                    <Link to="./scheduled" className="flex items-center gap-1 text-xs font-semibold text-brand hover:underline">
+                    <Link to="/wag/scheduled" className="flex items-center gap-1 text-xs font-semibold text-brand hover:underline">
                         Lihat semua
                         <Icon name="chevron-right" size={13} />
                     </Link>
@@ -295,7 +295,7 @@ export default function Dashboard() {
                             </div>
                             <p className="text-sm font-semibold text-txt">Belum ada jadwal pesan</p>
                             <p className="mt-1 text-[13px] text-txt-muted">Buat jadwal untuk mengirim pesan otomatis.</p>
-                            <Link to="./scheduled" className="mt-4">
+                            <Link to="/wag/scheduled" className="mt-4">
                                 <Button variant="secondary" size="sm" icon="plus">
                                     Buat Jadwal
                                 </Button>

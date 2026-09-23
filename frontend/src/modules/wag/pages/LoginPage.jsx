@@ -3,6 +3,8 @@ import { AuthContext } from "../context/AuthContext";
 import Button from "../components/ui/Button";
 import Icon from "../components/ui/Icon";
 
+const devQuickLogin = import.meta.env.DEV && import.meta.env.VITE_WAG_DEV_USERNAME && import.meta.env.VITE_WAG_DEV_PASSWORD
+
 export default function LoginPage() {
     const auth = useContext(AuthContext);
 
@@ -14,6 +16,18 @@ export default function LoginPage() {
 
     const nipRef = useRef(null);
     const pwdRef = useRef(null);
+
+    const quickLogin = async () => {
+        setError("");
+        setSubmitting(true);
+        try {
+            await auth.login({ nip: import.meta.env.VITE_WAG_DEV_USERNAME, password: import.meta.env.VITE_WAG_DEV_PASSWORD });
+        } catch (err) {
+            setError(err?.response?.data?.message || err.message || "Login cepat gagal");
+        } finally {
+            setSubmitting(false);
+        }
+    };
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -187,6 +201,12 @@ export default function LoginPage() {
                             {submitting ? "Memproses..." : "Masuk"}
                         </Button>
                     </form>
+
+                    {devQuickLogin && (
+                        <button type="button" onClick={quickLogin} disabled={submitting} className="mt-3 h-10 w-full rounded-xl border border-brand/20 bg-brand-soft text-sm font-semibold text-brand transition-colors hover:bg-brand/10 disabled:opacity-60">
+                            Login cepat (development)
+                        </button>
+                    )}
 
                     <a href="/" className="mt-4 block text-center text-xs font-medium text-txt-muted transition-colors hover:text-txt">
                         Kembali ke Dashboard

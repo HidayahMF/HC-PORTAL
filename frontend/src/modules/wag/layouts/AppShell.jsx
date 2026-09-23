@@ -186,7 +186,7 @@ export default function AppShell() {
               >
                 {({ close }) => (
                   <>
-                    <MenuItem icon={<Icon name="user" size={16} />} onClick={() => navigate("./profile")} close={close}>
+                    <MenuItem icon={<Icon name="user" size={16} />} onClick={() => navigate("/wag/profile")} close={close}>
                       Profil Saya
                     </MenuItem>
                     <div className="my-1 h-px bg-surface-divider" />

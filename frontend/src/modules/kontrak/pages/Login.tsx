@@ -9,6 +9,7 @@ export function Login() {
   const [birthCode, setBirthCode] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const devQuickLogin = import.meta.env.DEV && import.meta.env.VITE_KONTRAK_DEV_USERNAME && import.meta.env.VITE_KONTRAK_DEV_BIRTH_CODE;
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
@@ -19,6 +20,19 @@ export function Login() {
       location.replace('/kontrak/dashboard');
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'Login gagal.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const quickLogin = async () => {
+    setError('');
+    setLoading(true);
+    try {
+      await api.login({ nip: import.meta.env.VITE_KONTRAK_DEV_USERNAME, birthCode: import.meta.env.VITE_KONTRAK_DEV_BIRTH_CODE });
+      location.replace('/kontrak/dashboard');
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : 'Login cepat gagal.');
     } finally {
       setLoading(false);
     }
@@ -43,9 +57,10 @@ export function Login() {
           <input required inputMode="numeric" pattern="[0-9]{6,8}" minLength={6} maxLength={8} value={birthCode} onChange={event => setBirthCode(event.target.value.replace(/\D/g, '').slice(0, 8))} className="field" placeholder="DDMMYYYY" />
           <span className="mt-1 block text-xs text-bmc-muted">Format: DDMMYYYY, contoh 11 April 2008 menjadi 11042008.</span>
         </label>
-       <button disabled={loading} className="btn-primary w-full">{loading && <Spinner />}<LogIn size={16} />Masuk</button>
-       </form>
-       <a href="/" className="mt-4 block text-center text-sm font-medium text-bmc-muted hover:text-bmc-primary">Kembali ke Dashboard</a>
+        <button disabled={loading} className="btn-primary w-full">{loading && <Spinner />}<LogIn size={16} />Masuk</button>
+        </form>
+        {devQuickLogin && <button type="button" onClick={quickLogin} disabled={loading} className="mt-3 btn-secondary w-full">Login cepat (development)</button>}
+        <a href="/" className="mt-4 block text-center text-sm font-medium text-bmc-muted hover:text-bmc-primary">Kembali ke Dashboard</a>
      </section>
   </main>;
 }

@@ -34,7 +34,11 @@ async function getSimMonitoring(req, res) {
           IF(k.SIMA = '0000-00-00', NULL, DATE_FORMAT(k.SIMA, '%d-%m-%Y')) AS sima_tgl,
           IF(k.SIMA = '0000-00-00', NULL, DATEDIFF(k.SIMA, CURDATE())) AS sima_sisa
         FROM pw2.KARYAWAN k
-        LEFT JOIN budget.tarif t ON k.KODEF = t.kodef
+         LEFT JOIN (
+           SELECT kodef, MAX(Initial) AS Initial
+           FROM budget.tarif
+           GROUP BY kodef
+         ) t ON k.KODEF = t.kodef
         ${whereClause}
         ORDER BY LEAST(
           IF(k.SIMC = '0000-00-00', '9999-12-31', k.SIMC),
