@@ -1,0 +1,107 @@
+name: hc-portal
+
+services:
+  backend:
+    build:
+      context: ../..
+      dockerfile: docker/backend.Dockerfile
+    expose:
+      - "3000"
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 3000
+      TZ: ${TZ:-Asia/Jakarta}
+      DB_SERVER: ${DB_SERVER:?DB_SERVER is required}
+      DB_PORT: ${DB_PORT:-1433}
+      DB_DATABASE: ${DB_DATABASE:?DB_DATABASE is required}
+      DB_USER: ${DB_USER:?DB_USER is required}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      DB_ENCRYPT: ${DB_ENCRYPT:-false}
+      DB_TRUST_SERVER_CERTIFICATE: ${DB_TRUST_SERVER_CERTIFICATE:-true}
+      DB_TRUST_SERVER_CERT: ${DB_TRUST_SERVER_CERT:-true}
+      DB_CONNECTION_TIMEOUT: ${DB_CONNECTION_TIMEOUT:-15000}
+      DB_REQUEST_TIMEOUT: ${DB_REQUEST_TIMEOUT:-30000}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-86400}
+      COOKIE_MAX_AGE_MS: ${COOKIE_MAX_AGE_MS:-86400000}
+      COOKIE_SECURE: ${COOKIE_SECURE:-true}
+      COOKIE_SAME_SITE: ${COOKIE_SAME_SITE:-lax}
+      FRONTEND_URL: ${FRONTEND_URL:?FRONTEND_URL is required}
+      ALLOWED_NIPS: ${ALLOWED_NIPS:?ALLOWED_NIPS is required}
+      ALLOWED_ADMIN_NIPS: ${ALLOWED_ADMIN_NIPS:-}
+      ALLOWED_VIEWER_NIPS: ${ALLOWED_VIEWER_NIPS:-}
+      AUTH_ALLOWED_NIPS: ${AUTH_ALLOWED_NIPS:-}
+      AUTH_ADMIN_ROLE: ${AUTH_ADMIN_ROLE:-ADMIN}
+      AUTH_ACCESS_TABLE: ${AUTH_ACCESS_TABLE:-dbo.EmployeeAccess}
+      CONTRACT_AUTH_ACCESS_TABLE: ${CONTRACT_AUTH_ACCESS_TABLE:-dbo.ContractEmployeeAccess}
+      HRIS_EMPLOYEE_TABLE: ${HRIS_EMPLOYEE_TABLE:-dbo.hris_Employee}
+      HRIS_EMPLOYEE_NIP_COL: ${HRIS_EMPLOYEE_NIP_COL:-NIP}
+      HRIS_EMPLOYEE_NAME_COL: ${HRIS_EMPLOYEE_NAME_COL:-Name}
+      HRIS_EMPLOYEE_BIRTHDATE_COL: ${HRIS_EMPLOYEE_BIRTHDATE_COL:-BirthDate}
+      HRIS_EMPLOYEE_ACTIVE_COL: ${HRIS_EMPLOYEE_ACTIVE_COL:-is_Active}
+      HRIS_EMPLOYEE_DEPARTMENT_ID_COL: ${HRIS_EMPLOYEE_DEPARTMENT_ID_COL:-DepartID}
+      MASCOSTCENTER_TABLE: ${MASCOSTCENTER_TABLE:-dbo.MASCOSTCENTER}
+      MASCOSTCENTER_ID_COL: ${MASCOSTCENTER_ID_COL:-DepartID}
+      MASCOSTCENTER_NAME_COL: ${MASCOSTCENTER_NAME_COL:-NamaDepartemen}
+      HRIS_ACTIVE_VALUES: ${HRIS_ACTIVE_VALUES:-1,Y,true,TRUE}
+      LETTER_SEQUENCE_LEGACY_YEAR: ${LETTER_SEQUENCE_LEGACY_YEAR:-2026}
+      LETTER_SEQUENCE_LEGACY_START: ${LETTER_SEQUENCE_LEGACY_START:-692}
+      RATE_LIMIT_WINDOW_MS: ${RATE_LIMIT_WINDOW_MS:-900000}
+      RATE_LIMIT_MAX_REQUESTS: ${RATE_LIMIT_MAX_REQUESTS:-5}
+      MYSQL_HOST: ${MYSQL_HOST:?MYSQL_HOST is required for WAG}
+      MYSQL_PORT: ${MYSQL_PORT:-3306}
+      MYSQL_USER: ${MYSQL_USER:?MYSQL_USER is required for WAG}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?MYSQL_PASSWORD is required for WAG}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-pw2}
+      MYSQL_CONNECT_TIMEOUT: ${MYSQL_CONNECT_TIMEOUT:-10000}
+      MYSQL_POOL_LIMIT: ${MYSQL_POOL_LIMIT:-10}
+      WA_API: ${WA_API:?WA_API is required}
+      WA_HEALTH_URL: ${WA_HEALTH_URL:-}
+      WAGW_API: ${WAGW_API:-}
+      WAGW_FILE_DIR: ${WAGW_FILE_DIR:-/mnt/wagw/file}
+      WAGW_SMB_MOUNT: ${WAGW_SMB_MOUNT:-/mnt/wagw}
+      WAGW_SMB_HOST: ${WAGW_SMB_HOST:-}
+      WAG_BACKGROUND_ENABLED: ${WAG_BACKGROUND_ENABLED:-false}
+      CORS_ORIGIN: ${CORS_ORIGIN:?CORS_ORIGIN is required}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    volumes:
+      - hc_portal_wag_uploads:/app/src/modules/wag/runtime/uploads
+      - ${WAGW_SMB_MOUNT:-/mnt/wagw}:/mnt/wagw
+    networks:
+      - hc-portal-internal
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/readyz').then(r => process.exit(r.ok || r.status === 503 ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  frontend:
+    build:
+      context: ../..
+      dockerfile: docker/frontend.Dockerfile
+      args:
+        VITE_API_BASE_URL: /api/wag
+    ports:
+      - "127.0.0.1:${APP_PORT:-3011}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - hc-portal-internal
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  hc-portal-internal:
+    driver: bridge
+
+volumes:
+  hc_portal_wag_uploads:
+    name: ${WAG_UPLOAD_VOLUME:-hc_portal_wag_uploads}

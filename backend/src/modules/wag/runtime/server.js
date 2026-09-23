@@ -159,6 +159,12 @@ async function initializeBackgroundServices() {
   if (backgroundStarted) return;
   backgroundState = { status: "starting", error: null };
   validateEnv();
+  if (process.env.WAG_BACKGROUND_ENABLED === "false") {
+    backgroundStarted = true;
+    backgroundState = { status: "disabled", error: null };
+    logger.warn("WAG worker and schedulers are disabled by WAG_BACKGROUND_ENABLED");
+    return;
+  }
   try {
     await runMigrations();
     await resetStaleJobs();
