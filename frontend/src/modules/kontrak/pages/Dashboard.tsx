@@ -17,6 +17,17 @@ import { ConfirmDialog, ErrorMessage, Spinner } from "../components/States";
 const date = (value: string) =>
   new Date(`${value.slice(0, 10)}T00:00:00`).toLocaleDateString("id-ID");
 
+const contractDuration = (start: string, end: string) => {
+  const startDate = new Date(`${start.slice(0, 10)}T00:00:00`);
+  const endDate = new Date(`${end.slice(0, 10)}T00:00:00`);
+  const months =
+    (endDate.getFullYear() - startDate.getFullYear()) * 12 +
+    endDate.getMonth() -
+    startDate.getMonth();
+
+  return Number.isNaN(months) || months < 0 ? "-" : `${months} bulan`;
+};
+
 export function Dashboard() {
   const [summary, setSummary] = useState<Summary>();
   const [data, setData] = useState<Page>();
@@ -119,7 +130,7 @@ export function Dashboard() {
       ? "bg-green-50 text-bmc-success"
       : value === "Segera Berakhir"
         ? "bg-amber-50 text-bmc-warning"
-        : value === "Berakhir"
+        : value === "Tidak Aktif"
           ? "bg-red-50 text-bmc-error"
           : "bg-gray-100 text-bmc-muted";
   return (
@@ -155,7 +166,7 @@ export function Dashboard() {
           ["Total Kontrak", summary?.total ?? 0],
           ["Aktif", summary?.active ?? 0],
           ["Segera Berakhir", summary?.expiring ?? 0],
-          ["Berakhir", summary?.expired ?? 0],
+          ["Tidak Aktif", summary?.expired ?? 0],
         ].map(([label, value]) => (
           <div
             key={String(label)}
@@ -208,7 +219,7 @@ export function Dashboard() {
             <option>Belum Dimulai</option>
             <option>Aktif</option>
             <option>Segera Berakhir</option>
-            <option>Berakhir</option>
+            <option>Tidak Aktif</option>
             <option>Data belum lengkap</option>
           </select>
           <select
@@ -272,9 +283,10 @@ export function Dashboard() {
                   <th className="px-5 py-3">NIP</th>
                   <th className="px-5 py-3">Departemen</th>
                   <th className="px-5 py-3">Nomor Kontrak</th>
-                  <th className="px-5 py-3">Awal Kontrak</th>
-                  <th className="px-5 py-3">Akhir Kontrak</th>
-                  <th className="px-5 py-3">Sisa Kontrak</th>
+                   <th className="px-5 py-3">Awal Kontrak</th>
+                   <th className="px-5 py-3">Akhir Kontrak</th>
+                   <th className="px-5 py-3">Masa Kontrak</th>
+                   <th className="px-5 py-3">Sisa Kontrak</th>
                   <th className="px-5 py-3">Status</th>
                   <th className="px-5 py-3">Diinput Oleh</th>
                   <th className="px-5 py-3">Aksi</th>
@@ -289,9 +301,12 @@ export function Dashboard() {
                     <td className="px-5 py-4">{item.nip}</td>
                     <td className="px-5 py-4">{item.department || "-"}</td>
                     <td className="px-5 py-4">{item.contractNumber || "-"}</td>
-                    <td className="px-5 py-4">{date(item.startDate)}</td>
-                    <td className="px-5 py-4">{date(item.endDate)}</td>
-                    <td className="px-5 py-4">
+                     <td className="px-5 py-4">{date(item.startDate)}</td>
+                     <td className="px-5 py-4">{date(item.endDate)}</td>
+                     <td className="px-5 py-4">
+                       {contractDuration(item.startDate, item.endDate)}
+                     </td>
+                     <td className="px-5 py-4">
                       {item.remainingDays < 0
                         ? `${Math.abs(item.remainingDays)} hari lalu`
                         : `${item.remainingDays} hari`}
