@@ -96,6 +96,21 @@ app.patch('/api/admin/users/:nip', auth_2.requireAuth, (0, auth_2.requireRole)('
 catch (e) {
     next(e);
 } });
+app.delete('/api/admin/users/:nip', auth_2.requireAuth, (0, auth_2.requireRole)('ADMIN'), async (req, res, next) => { try {
+    const nip = typeof req.params.nip === 'string' ? req.params.nip.trim() : '';
+    if (!/^[A-Za-z0-9-]{1,50}$/.test(nip))
+        return res.status(400).json({ success: false, message: 'NIP tidak valid.' });
+    if (nip === req.user.nip)
+        return res.status(400).json({ success: false, message: 'Akses pengguna yang sedang login tidak dapat dihapus.' });
+    const deleted = await (0, userAccessService_1.deleteAccess)(nip);
+    if (!deleted)
+        return res.status(404).json({ success: false, message: 'Akses pengguna tidak ditemukan.' });
+    (0, audit_1.audit)('access_deleted', { nip });
+    send(res, null);
+}
+catch (e) {
+    next(e);
+} });
 app.get('/api/departments', async (_req, res, next) => { try {
     send(res, await (0, letterService_1.departments)());
 }

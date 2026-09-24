@@ -8,6 +8,7 @@ exports.listAccess = listAccess;
 exports.getAccess = getAccess;
 exports.grantAccess = grantAccess;
 exports.updateAccess = updateAccess;
+exports.deleteAccess = deleteAccess;
 const mssql_1 = __importDefault(require("mssql"));
 const database_1 = require("../config/database");
 const auth_1 = require("../config/auth");
@@ -57,4 +58,8 @@ async function updateAccess(nip, input) {
         request.input('isActive', mssql_1.default.Bit, input.isActive);
     }
     await request.query(`UPDATE ${accessTable()} SET ${fields.join(', ')} WHERE NIP = @nip;`);
+}
+async function deleteAccess(nip) {
+    const result = await (await (0, database_1.getPool)()).request().input('nip', mssql_1.default.VarChar(50), nip).query(`DELETE FROM ${accessTable()} WHERE NIP = @nip;`);
+    return (result.rowsAffected[0] ?? 0) > 0;
 }

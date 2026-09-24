@@ -55,4 +55,5 @@ export const api = {
   hrisEmployees: (search: string) => request<HrisEmployee[]>(`/admin/hris-employees?search=${encodeURIComponent(search)}`),
   grantAccess: (input: { nip: string; role: string }) => request<null>('/admin/users', { method: 'POST', body: JSON.stringify(input) }),
   updateAccess: (nip: string, input: { role?: string; isActive?: boolean }) => request<null>(`/admin/users/${encodeURIComponent(nip)}`, { method: 'PATCH', body: JSON.stringify(input) })
+  ,deleteAccess: (nip: string) => request<null>(`/admin/users/${encodeURIComponent(nip)}`, { method: 'DELETE' })
 };
