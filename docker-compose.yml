@@ -32,11 +32,14 @@ services:
       WAGW_API: ${WAGW_API:-}
       WAGW_FILE_DIR: ${WAGW_FILE_DIR:-}
       WAGW_SMB_MOUNT: ${WAGW_SMB_MOUNT:-/mnt/wagw}
+      UPLOAD_DIR: ${UPLOAD_DIR:-/app/uploads}
       CORS_ORIGIN: ${CORS_ORIGIN:-https://hc.bmc.co.id}
     volumes:
       - wagw_uploads:/app/src/modules/wag/runtime/uploads
+      - hris_uploads:/app/uploads
       - ${WAGW_SMB_MOUNT:-/mnt/wagw}:/mnt/wagw
     restart: unless-stopped
 
 volumes:
   wagw_uploads:
+  hris_uploads:

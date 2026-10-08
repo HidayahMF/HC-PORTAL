@@ -7,6 +7,7 @@ import logo from '../assets/logobmcwithprecision.png';
 import nomorSuratLogo from '../assets/NomorSurat (2).png';
 import nomorKontrakLogo from '../assets/NomorKontrak.png';
 import waGatewayLogo from '../assets/WaGateway.png';
+import hrisLogo from '../assets/hris.png';
 
 type PortalCard = {
   name: string;
@@ -19,6 +20,7 @@ const cards: PortalCard[] = [
   { name: 'Nomor Surat', description: 'Pengajuan dan monitoring nomor surat.', route: '/nomor-surat/', logo: nomorSuratLogo },
   { name: 'Kontrak Karyawan', description: 'Pengelolaan dan monitoring kontrak karyawan.', route: '/kontrak/', logo: nomorKontrakLogo },
   { name: 'WhatsApp Gateway', description: 'Monitoring SIM, broadcast, dan jadwal pesan.', route: '/wag/', logo: waGatewayLogo },
+  { name: 'HRIS', description: 'Data karyawan, struktur organisasi, kehadiran, dan cuti.', route: '/hris/login', logo: hrisLogo },
 ];
 
 export default function PortalHome() {

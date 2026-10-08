@@ -14,6 +14,10 @@
 # Logs and runtime data
 **/*.log
 **/backend/uploads/
+**/modules/hris/uploads/
+
+# Standalone HRIS source (sudah dimigrasikan ke backend/frontend modules; disimpan lokal)
+/hris/
 
 # Editor and OS files
 .vscode/

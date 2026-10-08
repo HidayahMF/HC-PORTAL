@@ -1,8 +1,8 @@
 # HC Portal BMC
 
-HC Portal is one React/TypeScript frontend and one Express/JavaScript backend. The public portal is available at `/`; the three independent modules live at `/nomor-surat/*`, `/kontrak/*`, and `/wag/*`.
+HC Portal is one React/TypeScript frontend and one Express/JavaScript backend. The public portal is available at `/`; the independent modules live at `/nomor-surat/*`, `/kontrak/*`, `/wag/*`, and `/hris/*`.
 
-The backend namespaces are `/api/nomor-surat/*`, `/api/kontrak/*`, and `/api/wag/*`. Nomor Surat and Kontrak keep independent HTTP-only cookies. WAG keeps its independent bearer JWT and namespaced browser storage keys (`wag_auth_token`, `wag_auth_user`). No portal login or SSO is used.
+The backend namespaces are `/api/nomor-surat/*`, `/api/kontrak/*`, `/api/wag/*`, and `/api/hris/*`. Nomor Surat and Kontrak keep independent HTTP-only cookies. WAG keeps its independent bearer JWT and namespaced browser storage keys (`wag_auth_token`, `wag_auth_user`). HRIS keeps its own bearer JWT (`hris_token`) and reuses the shared SQL Server pool. No portal login or SSO is used.
 
 ## Ports and local development
 

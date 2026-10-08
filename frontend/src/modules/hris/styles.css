@@ -1,0 +1,163 @@
+:root {
+  --navy: #0b1f3a;
+  --navy-700: #0f2748;
+  --navy-500: #1c3a63;
+  --lime: #b7f34a;
+  --lime-600: #93d81f;
+  --lime-soft: #eafbd0;
+  --soft: #f5f7f2;
+  --white: #ffffff;
+  --ink: #0b1f3a;
+  --muted: #5b6b7f;
+  --border: #dfe6dc;
+  --danger: #b91c1c;
+  --amber: #a15c07;
+  --radius-lg: 14px;
+  --radius: 10px;
+  --radius-sm: 8px;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* browser surfaces */
+::selection { background: var(--lime); color: var(--navy); }
+:root { caret-color: var(--navy); accent-color: var(--lime-600); scrollbar-width: thin; scrollbar-color: #c3ceba transparent; }
+input[type='date'], input[type='datetime-local'], input[type='month'], input[type='time'], input[type='week'] {
+  accent-color: var(--lime-600);
+  color-scheme: light;
+}
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: #c3ceba; border-radius: 8px; border: 2px solid var(--soft); }
+::-webkit-scrollbar-thumb:hover { background: #a9b79e; }
+
+/* ------------------------------------------------------------------
+   Base: element resets live in @layer base so Tailwind utilities
+   (layer utilities, declared in landing.css) can override them.
+   ------------------------------------------------------------------ */
+  * { box-sizing: border-box; }
+  html, body, #root { height: 100%; }
+
+  body {
+    margin: 0;
+    font-family: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--soft);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4 { margin: 0 0 6px; letter-spacing: -0.02em; text-wrap: balance; }
+  h1 { font-size: 26px; font-weight: 800; }
+  h2 { font-size: 20px; font-weight: 700; }
+  h3 { font-size: 17px; font-weight: 700; }
+  h4 { font-size: 14px; font-weight: 700; }
+  p { margin: 0 0 10px; max-width: 72ch; }
+  a { color: var(--navy); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+
+  :focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; border-radius: 6px; }
+
+  label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin: 0 0 6px; }
+  input, select, textarea {
+    font: inherit; font-size: 13.5px; color: var(--ink);
+    padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--white); width: 100%;
+    transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
+  }
+  input::placeholder, textarea::placeholder { color: #9aa8b6; }
+  input:hover:not(:focus), select:hover:not(:focus), textarea:hover:not(:focus) { border-color: #c3ceba; }
+  input:focus, select:focus, textarea:focus {
+    outline: none; border-color: var(--lime-600); box-shadow: 0 0 0 3px rgba(183, 243, 74, 0.35);
+  }
+  select {
+    appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 34px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235b6b7f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+  }
+  textarea { min-height: 88px; resize: vertical; }
+
+  button { font: inherit; cursor: pointer; }
+  button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+  table.dtable, table.table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.table { table-layout: fixed; }
+  table.dtable th, table.table th {
+    text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--muted); background: transparent; padding: 10px 12px; font-weight: 600;
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  table.dtable td, table.table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  table.dtable tbody tr:last-child td, table.table tbody tr:last-child td { border-bottom: 0; }
+  table.table td { overflow-wrap: anywhere; }
+  table.dtable td, table.dtable th { font-variant-numeric: tabular-nums; }
+  table.dtable tbody tr:hover, table.table tbody tr:hover { background: var(--soft); }
+  table.table td:first-child { color: var(--muted); width: 200px; font-weight: 600; }
+  table.table td:nth-child(2) { width: 16px; }
+
+/* ------------------------------------------------------------------
+   Komponen app (dipakai halaman lama via components/ui.jsx)
+   ------------------------------------------------------------------ */
+.page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+.page-head .sub { margin: 2px 0 0; color: var(--muted); font-size: 13.5px; }
+
+.card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 18px 20px; margin-bottom: 16px;
+  box-shadow: 0 1px 2px rgba(11, 31, 58, 0.04);
+}
+.card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.card-head h2, .card-head h4 { margin: 0; }
+.card-head .hint { font-size: 12px; color: var(--muted); }
+
+.cols { display: grid; gap: 16px; }
+.cols.two { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
+@media (max-width: 980px) { .cols.two { grid-template-columns: 1fr; } }
+
+.kv { width: 100%; border-collapse: collapse; font-size: 13px; }
+.kv th { text-align: left; color: var(--muted); font-weight: 600; width: 180px; padding: 7px 0; vertical-align: top; }
+.kv td { padding: 7px 0; }
+
+/* Base tombol bersama: .btn (link/tombol) + tombol lama yang hanya pakai class varian. */
+:is(.btn, button.sec, button.ghost, button.danger, button.accent, button:not([class])) {
+  font: inherit; font-size: 13.5px; font-weight: 600; line-height: 1.2;
+  padding: 9px 16px; border: 1px solid transparent; border-radius: var(--radius);
+  cursor: pointer; background: var(--navy); color: #fff; text-decoration: none;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  transition: background 0.15s var(--ease), transform 0.08s var(--ease);
+}
+:is(.btn, button.sec, button.ghost, button.danger, button.accent, button:not([class])):hover { background: var(--navy-500); }
+:is(.btn, button.sec, button.ghost, button.danger, button.accent, button:not([class])):active { transform: translateY(1px); }
+.btn.accent, button.accent { background: var(--lime); color: var(--navy); }
+.btn.accent:hover, button.accent:hover { background: var(--lime-600); }
+.btn.sec, button.sec { background: #eef2ec; color: var(--navy); }
+.btn.sec:hover, button.sec:hover { background: #e0e7da; }
+.btn.ghost, button.ghost { background: transparent; color: var(--navy); border-color: var(--border); }
+.btn.ghost:hover, button.ghost:hover { background: var(--soft); }
+.btn.danger, button.danger { background: #fbeaea; color: var(--danger); }
+.btn.danger:hover, button.danger:hover { background: #f6d9d9; }
+.btn.sm { padding: 6px 12px; font-size: 12px; }
+.btn:disabled, button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.field { margin-bottom: 12px; }
+
+.grid-wrap { overflow-x: auto; }
+.empty { padding: 22px; text-align: center; color: var(--muted); font-size: 13px; }
+.empty b { display: block; color: var(--ink); font-size: 14px; margin-bottom: 3px; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+.muted { color: var(--muted); font-size: 12.5px; }
+.err { color: var(--danger); font-size: 13px; font-weight: 600; }
+.center { display: grid; place-items: center; min-height: 100vh; }
+.pill {
+  display: inline-block; padding: 2px 9px; border-radius: 6px;
+  font-size: 11px; font-weight: 700; background: var(--soft); color: var(--navy);
+  font-variant-numeric: tabular-nums;
+}
+.section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0 0 10px; }
+
+/* ---------- util ---------- */
+.tnum { font-variant-numeric: tabular-nums; }
+.shell a { text-decoration: none; }
+.shell {
+  font-family: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', system-ui, -apple-system,
+    'Segoe UI', Roboto, sans-serif;
+}
