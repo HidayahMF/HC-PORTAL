@@ -41,13 +41,18 @@ async function login(nip, password) {
   }
 
   const row = await queryOne(
-    'SELECT TOP 1 NIP, Name, BirthDate FROM BMC.dbo.hris_Employee WHERE NIP = @nip',
+    'SELECT TOP 1 NIP, Name, BirthDate, RTRIM(LTRIM(DepartID)) AS DepartID FROM BMC.dbo.hris_Employee WHERE NIP = @nip',
     { nip: username }
   );
 
   // Pesan seragam agar tidak membocorkan NIP mana yang ada.
   if (!row || toIsoDate(row.BirthDate) !== iso) {
     throw httpError(401, 'NIP atau tanggal lahir salah');
+  }
+
+  // Gerbang departemen: HRIS hanya untuk DepartID 0300.
+  if (String(row.DepartID ?? '').trim() !== '0300') {
+    throw httpError(403, 'Akses HRIS hanya untuk Departemen 0300');
   }
 
   return { username: clean(row.NIP), name: clean(row.Name), role: 'employee' };
