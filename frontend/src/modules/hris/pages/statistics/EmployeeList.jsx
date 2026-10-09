@@ -18,7 +18,7 @@ export default function EmployeeList() {
   const [id, setId] = useState('');
   const { data, loading, error } = useFetch(`/statistics/employees?id=${encodeURIComponent(id)}`, [id]);
   return (
-    <Page title="Data Karyawan">
+    <Page title="Daftar Karyawan">
       <Card title="Filter">
         <select value={id} onChange={(e) => setId(e.target.value)}>
           <option value="">Semua</option>

@@ -34,7 +34,7 @@ export default function Retired() {
 
   const isHist = filter.id === 'history';
   return (
-    <Page title="Karyawan Pensiun">
+    <Page title="Pensiun">
       <Card title="Filter">
         <form className="row" onSubmit={(e) => { e.preventDefault(); setFilter({ id, jobs }); }}>
           <div>

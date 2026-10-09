@@ -33,7 +33,7 @@ export default function Pride() {
   }
 
   return (
-    <Page title="P.R.I.D.E">
+    <Page title="Pride">
       <Card title="Pilih Job Level">
         <form className="row" onSubmit={load}>
           <div>

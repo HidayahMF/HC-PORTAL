@@ -63,7 +63,7 @@ export default function EtcomLog() {
   ];
 
   return (
-    <Page title="Absen for Etcom">
+    <Page title="Absen Etcom">
       <Card title="Search">
         <form
           onSubmit={(e) => { e.preventDefault(); setFilter(form); }}

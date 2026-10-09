@@ -43,7 +43,7 @@ export default function EmployeeCompetence() {
   }
 
   return (
-    <Page title="Employee Competence">
+    <Page title="Kompetensi Karyawan">
       {loading && <p className="muted">Memuat...</p>}
       {error && <p className="err">{error}</p>}
       <div className="row" style={{ alignItems: 'flex-start' }}>

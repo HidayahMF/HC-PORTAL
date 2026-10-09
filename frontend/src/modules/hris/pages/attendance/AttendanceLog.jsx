@@ -60,7 +60,7 @@ export default function AttendanceLog() {
   ];
 
   return (
-    <Page title="Log Attendance">
+    <Page title="Log Kehadiran">
       <Card title="Search">
         <form
           onSubmit={(e) => { e.preventDefault(); setFilter(form); }}

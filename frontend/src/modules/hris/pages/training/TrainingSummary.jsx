@@ -11,7 +11,7 @@ const columns = [
 export default function TrainingSummary() {
   const { data, loading, error } = useFetch('/training/summary');
   return (
-    <Page title="History Training">
+    <Page title="Pelatihan">
       <Card>
         {loading && <p className="muted">Memuat...</p>}
         {error && <p className="err">{error}</p>}

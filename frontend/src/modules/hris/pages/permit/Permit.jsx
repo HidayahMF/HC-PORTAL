@@ -57,7 +57,7 @@ export default function Permit() {
   ];
 
   return (
-    <Page title="Permit">
+    <Page title="Izin">
       <Card title="Periode">
         <div className="flex flex-wrap items-end gap-4">
           <div className="w-[180px]">

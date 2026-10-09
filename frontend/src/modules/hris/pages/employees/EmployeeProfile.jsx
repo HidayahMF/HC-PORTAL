@@ -157,13 +157,13 @@ export default function EmployeeProfile() {
   useEffect(() => { setPhotoOk(true); }, [empNip]);
 
   if (loading) return (
-    <Page title="Employee Information">
+    <Page title="Data Karyawan">
       <div className="mb-4"><EmployeeSearch /></div>
       <Card><p className="muted">Memuat...</p></Card>
     </Page>
   );
   if (error) return (
-    <Page title="Employee Information">
+    <Page title="Data Karyawan">
       <div className="mb-4"><EmployeeSearch /></div>
       <Card><p className="err">{error}</p></Card>
     </Page>
@@ -191,7 +191,7 @@ export default function EmployeeProfile() {
   ) : null);
 
   return (
-    <Page title="Employee Information" actions={actions}>
+    <Page title="Data Karyawan" actions={actions}>
       <div className="mb-4"><EmployeeSearch autoFocus /></div>
       <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-12">
         <div className="lg:col-span-5">

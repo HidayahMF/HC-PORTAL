@@ -328,7 +328,7 @@ export default function DepartmentList() {
   ];
 
   return (
-    <Page title="Master Department" actions={
+    <Page title="Departemen" actions={
       <>
         <button className="btn sec" onClick={() => setStructureOpen(true)}>Lihat Struktur</button>
         <button className="btn" onClick={openAdd}>+ Tambah Departemen</button>

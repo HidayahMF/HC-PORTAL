@@ -25,7 +25,7 @@ export default function EmployeeTable() {
   const rows = data?.data || [];
 
   return (
-    <Page title="Data Employee Active">
+    <Page title="Tabel Karyawan">
       <Card title="Data Employee Active">
         {error && <p className="err">{error}</p>}
         {loading ? <p className="muted">Memuat...</p> : <DataTable columns={columns} rows={rows} />}

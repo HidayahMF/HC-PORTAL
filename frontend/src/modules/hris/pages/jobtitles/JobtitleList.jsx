@@ -151,7 +151,7 @@ export default function JobtitleList() {
   ];
 
   return (
-    <Page title="Master Job Title" actions={<button className="btn" onClick={openAdd}>+ Tambah Jobtitle</button>}>
+    <Page title="Nama Jabatan" actions={<button className="btn" onClick={openAdd}>+ Tambah Jobtitle</button>}>
       <Card>
         {loading ? (
           <div className="muted">Memuat...</div>

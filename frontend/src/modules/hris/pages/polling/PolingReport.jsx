@@ -49,7 +49,7 @@ export default function PolingReport() {
   ];
 
   return (
-    <Page title="Data Report Poling">
+    <Page title="Polling">
       <Card title="Pilih Poling">
         <select value={idPoling} onChange={(e) => load(e.target.value)}>
           <option value="">Pilih Judul Poling</option>

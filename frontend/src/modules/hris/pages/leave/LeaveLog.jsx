@@ -62,7 +62,7 @@ export default function LeaveLog() {
   }
 
   return (
-    <Page title="Log Cuti Tahunan/Besar">
+    <Page title="Riwayat Cuti">
       <Card title="Search">
         <div className="row">
           <div>

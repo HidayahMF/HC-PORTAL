@@ -51,7 +51,7 @@ export default function Hierarchy() {
   if (error) return <Page title="Hierarki"><Card><p className="err">{error}</p></Card></Page>;
 
   return (
-    <Page title="Hierarki Approval Online">
+    <Page title="Hierarki">
       <Card title="Identitas">
         {info ? (
           <table style={{ fontSize: 13 }}>

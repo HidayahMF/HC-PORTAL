@@ -95,7 +95,7 @@ export default function EmployeeForm({ mode = 'insert' }) {
   }
 
   return (
-    <Page title={editing ? 'Edit Employee Profile' : 'Tambah Employee'}>
+    <Page title={editing ? 'Edit Karyawan' : 'Tambah Karyawan'}>
       <Card>
         {err ? <p className="err">{err}</p> : null}
         <form onSubmit={submit}>

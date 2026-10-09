@@ -5,6 +5,7 @@ import { useFetch } from '../api/useFetch.js';
 import { Donut, VBars, MiniBars, Legend } from '../components/charts.jsx';
 import { useCountUp } from '../app/useCountUp.js';
 import { IcChevron, IcUser, IcCap, IcClock, IcUpcoming, IcUsers } from '../app/icons.jsx';
+import { Page } from '../components/ui.jsx';
 
 const dateID = () => new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date());
 const greet = () => { const h = new Date().getHours(); return h < 11 ? 'GOOD MORNING,' : h < 15 ? 'GOOD AFTERNOON,' : h < 19 ? 'GOOD EVENING,' : 'GOOD NIGHT,'; };
@@ -89,6 +90,7 @@ export default function Dashboard() {
   }
 
   return (
+    <Page title="Dasbor">
     <div className="mx-auto max-w-[1320px] space-y-5">
       {/* HERO */}
       <Reveal>
@@ -271,5 +273,6 @@ export default function Dashboard() {
         </Reveal>
       </div>
     </div>
+    </Page>
   );
 }

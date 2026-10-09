@@ -114,7 +114,7 @@ export default function SuddenLeave() {
   ];
 
   return (
-    <Page title="Sudden Leave" actions={<button className="btn" onClick={openAdd}>+ Add Sudden Leave</button>}>
+    <Page title="Cuti Mendadak" actions={<button className="btn" onClick={openAdd}>+ Add Sudden Leave</button>}>
       <Card>
         {loading ? (
           <div className="muted">Memuat...</div>

@@ -53,7 +53,7 @@ export default function SpecialLeave() {
   ];
 
   return (
-    <Page title="Special Leave">
+    <Page title="Cuti Khusus">
       <Card title="Periode">
         <div className="flex flex-wrap items-end gap-4">
           <div className="w-[180px]">

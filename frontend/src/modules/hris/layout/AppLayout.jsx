@@ -3,61 +3,55 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '../auth/AuthContext.jsx';
 import {
-  IcGrid, IcUser, IcOrg, IcClock, IcUsers, IcCalendar, IcFile, IcBadge,
-  IcKey, IcPoll, IcReport, IcLogout, IcSearch, IcBell, IcChevron, IcMenu, IcClose,
+  IcGrid, IcUser, IcOrg, IcClock, IcUsers, IcCalendar,
+  IcPoll, IcReport, IcLogout, IcSearch, IcBell, IcChevron, IcMenu, IcClose,
 } from '../app/icons.jsx';
 
 const NAV = [
   {
-    group: 'General',
+    group: 'Umum',
     items: [
-      { label: 'Dashboard', to: '/hris/dashboard', icon: IcGrid },
-      { label: 'Employee', icon: IcUser, children: [
-        { label: 'Emp Data', to: '/hris/employees' },
-        { label: 'Employee Temporary', to: '/hris/temporary' },
-        { label: 'Employee Table', to: '/hris/export/employees' },
+      { label: 'Dasbor', to: '/hris/dashboard', icon: IcGrid },
+      { label: 'Karyawan', icon: IcUser, children: [
+        { label: 'Data Karyawan', to: '/hris/employees' },
+        { label: 'Karyawan Sementara', to: '/hris/temporary' },
+        { label: 'Tabel Karyawan', to: '/hris/export/employees' },
       ] },
-      { label: 'Organization', icon: IcOrg, children: [
-        { label: 'Division', to: '/hris/divisions' },
-        { label: 'Department', to: '/hris/departments' },
-        { label: 'JobLevel', to: '/hris/joblevels' },
-        { label: 'Jobtitle', to: '/hris/jobtitles' },
-        { label: 'Composition', to: '/hris/manpower/resource' },
+      { label: 'Organisasi', icon: IcOrg, children: [
+        { label: 'Divisi', to: '/hris/divisions' },
+        { label: 'Departemen', to: '/hris/departments' },
+        { label: 'Tingkat Jabatan', to: '/hris/joblevels' },
+        { label: 'Nama Jabatan', to: '/hris/jobtitles' },
+        { label: 'Komposisi', to: '/hris/manpower/resource' },
       ] },
-      { label: 'Human Capital', icon: IcUsers, children: [
-        { label: 'Disciplinary', to: '/hris/disciplinary' },
-        { label: 'Employee Competence', to: '/hris/competence/employee' },
+      { label: 'Sumber Daya Manusia', icon: IcUsers, children: [
+        { label: 'Kedisiplinan', to: '/hris/disciplinary' },
+        { label: 'Kompetensi Karyawan', to: '/hris/competence/employee' },
         { label: 'Pride', to: '/hris/competence/pride' },
-        { label: 'Training', to: '/hris/training' },
-        { label: 'Training Participants', to: '/hris/training/participants' },
-        { label: 'HR Policy', to: '/hris/pkb' },
+        { label: 'Pelatihan', to: '/hris/training' },
+        { label: 'Peserta Pelatihan', to: '/hris/training/participants' },
+        { label: 'Kebijakan HR', to: '/hris/pkb' },
       ] },
-      { label: 'Employee Leave', icon: IcCalendar, children: [
-        { label: 'Employee Leave Balance', to: '/hris/leave/day' },
-        { label: 'Sudden Leave', to: '/hris/leave/sudden' },
-        { label: 'Employee Leave History', to: '/hris/leave/log' },
+      { label: 'Cuti Karyawan', icon: IcCalendar, children: [
+        { label: 'Saldo Cuti', to: '/hris/leave/day' },
+        { label: 'Cuti Mendadak', to: '/hris/leave/sudden' },
+        { label: 'Riwayat Cuti', to: '/hris/leave/log' },
       ] },
-      { label: 'Permit & Special Leave', icon: IcCalendar, children: [
-        { label: 'Permit', to: '/hris/permit' },
-        { label: 'Special Leave', to: '/hris/special-leave' },
+      { label: 'Izin & Cuti Khusus', icon: IcCalendar, children: [
+        { label: 'Izin', to: '/hris/permit' },
+        { label: 'Cuti Khusus', to: '/hris/special-leave' },
       ] },
       { label: 'SKK', icon: IcReport, children: [
         { label: 'Bagikan SKK', to: '/hris/skk/share' },
-        { label: 'Report SKK Periode', to: '/hris/skk/report' },
-      ] },
-      { label: 'Documents & Rules', icon: IcFile, soon: true },
-      { label: 'Management Receptionist', icon: IcBadge, soon: true },
-      { label: 'User Application', icon: IcKey, children: [
-        { label: 'User Online PR', to: '/hris/users/pr' },
-        { label: 'User E-Procurement', to: '/hris/users/ep' },
+        { label: 'Laporan SKK Periode', to: '/hris/skk/report' },
       ] },
       { label: 'Polling', to: '/hris/polling', icon: IcPoll },
-      { label: 'Reports', icon: IcReport, children: [
-        { label: 'Education', to: '/hris/statistics/education' },
-        { label: 'Age', to: '/hris/statistics/age' },
-        { label: 'Employee List', to: '/hris/statistics/employees' },
-        { label: 'Retired', to: '/hris/statistics/retired' },
-        { label: 'Level Two', to: '/hris/statistics/level-two' },
+      { label: 'Laporan', icon: IcReport, children: [
+        { label: 'Pendidikan', to: '/hris/statistics/education' },
+        { label: 'Usia', to: '/hris/statistics/age' },
+        { label: 'Daftar Karyawan', to: '/hris/statistics/employees' },
+        { label: 'Pensiun', to: '/hris/statistics/retired' },
+        { label: 'Level Dua', to: '/hris/statistics/level-two' },
       ] },
     ],
   },
@@ -82,7 +76,7 @@ function Brand({ compact }) {
       {!compact && (
         <div className="min-w-0">
           <div className="text-[15px] font-extrabold tracking-tight text-navy">HRIS</div>
-          <div className="truncate text-[10.5px] leading-tight text-mut">Human Resource Management System</div>
+          <div className="truncate text-[10.5px] leading-tight text-mut">Sistem Manajemen Sumber Daya Manusia</div>
         </div>
       )}
     </div>
@@ -115,7 +109,7 @@ function NavItems({ compact, pathname, open, toggleGroup, go, setDrawer }) {
             <div key={it.label} className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] text-mut/60" title="Belum tersedia">
               <Icon className="shrink-0" />
               {!compact && <span className="flex-1 truncate">{it.label}</span>}
-              {!compact && <span className="rounded bg-soft px-1.5 py-0.5 text-[10px] font-semibold uppercase text-mut">soon</span>}
+              {!compact && <span className="rounded bg-soft px-1.5 py-0.5 text-[10px] font-semibold uppercase text-mut">segera</span>}
             </div>
           );
         }
@@ -185,10 +179,10 @@ function SidebarInner({ compact, pathname, open, toggleGroup, go, setDrawer, onL
       <NavItems compact={compact} pathname={pathname} open={open} toggleGroup={toggleGroup} go={go} setDrawer={setDrawer} />
       <div className="px-3 pb-3">
         {!compact && <BrandCard />}
-        <button type="button" onClick={onLogout} title="Logout"
+        <button type="button" onClick={onLogout} title="Keluar"
           className="flex w-full items-center gap-3 rounded-lg bg-transparent px-3 py-2.5 text-[13.5px] text-mut transition-colors hover:bg-soft hover:text-navy">
           <IcLogout className="shrink-0" />
-          {!compact && <span>Logout</span>}
+          {!compact && <span>Keluar</span>}
         </button>
       </div>
     </>
@@ -275,7 +269,7 @@ export default function AppLayout({ children }) {
               <div className="px-3 pb-3">
                 <BrandCard />
                 <button type="button" onClick={doLogout} className="flex w-full items-center gap-3 rounded-lg bg-transparent px-3 py-2.5 text-[13.5px] text-mut hover:bg-soft hover:text-navy">
-                  <IcLogout className="shrink-0" /> <span>Logout</span>
+                  <IcLogout className="shrink-0" /> <span>Keluar</span>
                 </button>
               </div>
             </motion.aside>
@@ -296,7 +290,7 @@ export default function AppLayout({ children }) {
               onChange={(e) => { setQ(e.target.value); setSearchOpen(true); }}
               onFocus={() => setSearchOpen(true)}
               onBlur={() => setTimeout(() => setSearchOpen(false), 150)}
-              placeholder="Search employee, menu, or anything…"
+              placeholder="Cari karyawan, menu, atau apa pun…"
               className="w-full rounded-lg border border-line bg-soft py-2.5 pl-9 pr-16 text-[13.5px] text-navy placeholder:text-mut/70" aria-label="Pencarian" />
             <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 rounded border border-line bg-white px-1.5 py-0.5 text-[10.5px] font-semibold text-mut">Ctrl K</span>
             {searchOpen && results.length > 0 && (
@@ -336,7 +330,7 @@ export default function AppLayout({ children }) {
                 <span className="grid h-9 w-9 place-items-center rounded-full bg-navy text-[12px] font-bold text-lime">{initials(user?.name || user?.sub)}</span>
                 <span className="hidden text-left leading-tight sm:block">
                   <span className="block text-[13px] font-semibold text-navy">{user?.name || user?.sub}</span>
-                  <span className="block text-[11px] text-mut">{user?.role || 'employee'}</span>
+                  <span className="block text-[11px] text-mut">{user?.role === 'employee' ? 'Karyawan' : (user?.role || 'Karyawan')}</span>
                 </span>
                 <IcChevron width={14} height={14} className={`hidden text-mut transition-transform sm:block ${userOpen ? 'rotate-90' : ''}`} />
               </button>
@@ -346,11 +340,11 @@ export default function AppLayout({ children }) {
                     className="absolute right-0 top-full z-40 mt-2 w-48 overflow-hidden rounded-xl border border-line bg-white py-1 shadow-[0_24px_50px_-30px_rgba(11,31,58,.5)]">
                     <div className="border-b border-line px-3.5 py-2.5">
                       <div className="text-[13px] font-semibold text-navy">{user?.name || user?.sub}</div>
-                      <div className="text-[11.5px] text-mut">{user?.role || 'employee'}</div>
+                      <div className="text-[11.5px] text-mut">{user?.role === 'employee' ? 'Karyawan' : (user?.role || 'Karyawan')}</div>
                     </div>
                     <button type="button" onClick={doLogout}
                       className="flex w-full items-center gap-2.5 bg-transparent px-3.5 py-2.5 text-left text-[13px] text-navy hover:bg-soft">
-                      <IcLogout width={16} height={16} /> Logout
+                      <IcLogout width={16} height={16} /> Keluar
                     </button>
                   </motion.div>
                 )}

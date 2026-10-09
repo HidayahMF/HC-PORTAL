@@ -6,7 +6,7 @@ export default function ManResource() {
 
   return (
     <Page
-      title={data?.title || 'Man Resource'}
+      title="Komposisi"
       actions={<LinkButton to="/hris/manpower/resource/detail">Detail</LinkButton>}
     >
       <Card>

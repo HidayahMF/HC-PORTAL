@@ -190,7 +190,7 @@ export default function LeaveDay() {
   ];
 
   return (
-    <Page title="Employee Leave Balance" actions={<button className="btn" onClick={openAdd}>+ Add Leave Day</button>}>
+    <Page title="Saldo Cuti" actions={<button className="btn" onClick={openAdd}>+ Add Leave Day</button>}>
       <Card>
         {loading ? (
           <div className="muted">Memuat...</div>

@@ -33,7 +33,7 @@ export default function Education() {
   ];
 
   return (
-    <Page title={`Employee Education ${data?.desc || ''}`}>
+    <Page title="Pendidikan">
       <Card title="Filter">
         <form className="row" onSubmit={(e) => { e.preventDefault(); setFilter({ id, desc }); }}>
           <div><label>EndEdu (id)</label><input value={id} onChange={(e) => setId(e.target.value)} /></div>

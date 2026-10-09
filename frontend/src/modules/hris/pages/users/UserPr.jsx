@@ -46,7 +46,7 @@ export default function UserPr() {
   }
 
   return (
-    <Page title="Data User PR Online">
+    <Page title="Pengguna PR Online">
       <Card title="Tambah User PR">
         <form onSubmit={submit}>
           <div>

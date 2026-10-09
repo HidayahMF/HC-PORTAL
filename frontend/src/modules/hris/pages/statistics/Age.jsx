@@ -17,7 +17,7 @@ export default function Age() {
   const [id, setId] = useState(OPTIONS[0]);
   const { data, loading, error } = useFetch(`/statistics/age?id=${encodeURIComponent(id)}`, [id]);
   return (
-    <Page title={`Karyawan Umur ${data?.id || id}`}>
+    <Page title="Usia">
       <Card title="Filter">
         <label>Rentang Umur</label>{' '}
         <select value={id} onChange={(e) => setId(e.target.value)}>

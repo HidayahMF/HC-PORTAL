@@ -34,7 +34,7 @@ export default function StrategicPlanning() {
   };
 
   return (
-    <Page title="Man Strategic Planning">
+    <Page title="Perencanaan Strategis">
       <Card title="Filter NIP">
         <form className="row" onSubmit={filter}>
           <div>

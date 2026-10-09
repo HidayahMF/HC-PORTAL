@@ -72,7 +72,7 @@ export default function DivisionList() {
   ];
 
   return (
-    <Page title="Master Division">
+    <Page title="Divisi">
       <Card title={editId ? `Edit Division ${editId}` : 'Tambah Division'}>
         <form className="row" onSubmit={submit}>
           <div>

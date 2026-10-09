@@ -79,7 +79,7 @@ export default function TemporaryList() {
   ];
 
   return (
-    <Page title="Temporary Employee Data">
+    <Page title="Karyawan Sementara">
       <Card>
         {loading && <p className="muted">Memuat...</p>}
         {error && <p className="err">{error}</p>}

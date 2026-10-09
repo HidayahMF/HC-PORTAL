@@ -71,7 +71,7 @@ export default function JobLevelList() {
   ];
 
   return (
-    <Page title="Master Job Level">
+    <Page title="Tingkat Jabatan">
       <Card title={editId ? `Edit Job Level ${editId}` : 'Tambah Job Level'}>
         <form className="row" onSubmit={submit}>
           <div>

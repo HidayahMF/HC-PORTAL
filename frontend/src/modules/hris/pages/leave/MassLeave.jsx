@@ -21,7 +21,7 @@ export default function MassLeave() {
   );
 
   return (
-    <Page title="Tanggal Cuti Besar">
+    <Page title="Cuti Besar">
       <Card title="Search">
         <div className="row">
           <div>

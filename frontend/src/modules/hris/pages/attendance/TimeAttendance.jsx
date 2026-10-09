@@ -60,7 +60,7 @@ export default function TimeAttendance() {
   ];
 
   return (
-    <Page title="Time Attendance">
+    <Page title="Presensi Waktu">
       <Card title="Search">
         <form
           onSubmit={(e) => { e.preventDefault(); setFilter(form); }}

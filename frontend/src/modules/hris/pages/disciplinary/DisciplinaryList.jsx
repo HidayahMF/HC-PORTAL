@@ -182,7 +182,7 @@ export default function DisciplinaryList() {
 
   return (
     <Page
-      title="Disciplinary"
+      title="Kedisiplinan"
       actions={!showForm && <button type="button" onClick={openNew}>+ Tambah</button>}
     >
       {msg && <p className="muted">{msg}</p>}

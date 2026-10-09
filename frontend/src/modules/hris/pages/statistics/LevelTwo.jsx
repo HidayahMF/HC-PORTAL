@@ -51,7 +51,7 @@ export default function LevelTwo() {
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
 
   return (
-    <Page title="Employee Job Level">
+    <Page title="Level Dua">
       <Card title="Filter">
         <form className="row" onSubmit={(e) => { e.preventDefault(); setFilter(f); }}>
           <div>

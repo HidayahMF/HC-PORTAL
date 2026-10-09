@@ -37,7 +37,7 @@ export default function UserEp() {
   }
 
   return (
-    <Page title="Data User E-Procurement">
+    <Page title="Pengguna E-Procurement">
       <Card title="Tambah User EP">
         <form onSubmit={submit}>
           <div>

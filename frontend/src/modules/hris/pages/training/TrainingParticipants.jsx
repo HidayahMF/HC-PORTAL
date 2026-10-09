@@ -123,7 +123,7 @@ export default function TrainingParticipants() {
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
   return (
-    <Page title="Training Participants">
+    <Page title="Peserta Pelatihan">
       <Card title="Pilih Tahun">
         <select value={activeYear} onChange={(e) => setYear(e.target.value)}>
           {list.map((r) => <option key={r.tahun} value={r.tahun}>{r.tahun}</option>)}

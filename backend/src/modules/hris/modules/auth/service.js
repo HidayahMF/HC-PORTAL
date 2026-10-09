@@ -1,6 +1,9 @@
 const { queryOne } = require('../../db/pool.js');
 const { httpError } = require('../../lib/http.js');
 
+// NIP yang boleh masuk HRIS walau DepartID bukan 0300.
+const PRIVILEGED_NIPS = new Set(['0377', '5614']);
+
 /**
  * Konversi tanggal lahir yang diketik di form (ddmmyy) ke ISO yyyy-mm-dd
  * agar bisa dibandingkan dengan kolom BirthDate (datetime) di hris_Employee.
@@ -31,8 +34,8 @@ const clean = (s) => String(s ?? '').trim();
  * Padanan hris/login_validate(), dialihkan ke autentikasi hris_Employee:
  * username = NIP, password = tanggal lahir (ddmmyy).
  */
-async function login(nip, password) {
-  const username = clean(nip);
+async function login(nipRaw, password) {
+  const username = clean(nipRaw);
   if (!username) throw httpError(400, 'NIP wajib diisi');
 
   const iso = ddmmyyToIso(password);
@@ -50,8 +53,9 @@ async function login(nip, password) {
     throw httpError(401, 'NIP atau tanggal lahir salah');
   }
 
-  // Gerbang departemen: HRIS hanya untuk DepartID 0300.
-  if (String(row.DepartID ?? '').trim() !== '0300') {
+  // Gerbang departemen: HRIS hanya untuk DepartID 0300, kecuali NIP istimewa.
+  const nip = clean(row.NIP);
+  if (String(row.DepartID ?? '').trim() !== '0300' && !PRIVILEGED_NIPS.has(nip)) {
     throw httpError(403, 'Akses HRIS hanya untuk Departemen 0300');
   }
 
