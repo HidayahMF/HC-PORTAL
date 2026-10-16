@@ -22,17 +22,17 @@ const COLS = [
 ];
 
 export default function CareerPath() {
-  const [f, setF] = useState({ nip: '' });
+  const [f, setF] = useState({ q: '' });
   const [filter, setFilter] = useState(f);
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
   const [eerr, setEerr] = useState('');
   const doneTimer = useRef(null);
 
-  const path = filter.nip
-    ? `/statistics/level-three?nip=${encodeURIComponent(filter.nip)}`
+  const path = filter.q
+    ? `/statistics/level-three?q=${encodeURIComponent(filter.q)}`
     : '/statistics/level-three';
-  const { data, loading, error } = useFetch(path, [filter.nip]);
+  const { data, loading, error } = useFetch(path, [filter.q]);
   const rows = data?.data || [];
 
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
@@ -44,7 +44,7 @@ export default function CareerPath() {
     setDone(false);
     try {
       const res = await api.get(
-        '/statistics/level-three/export' + (filter.nip ? `?nip=${encodeURIComponent(filter.nip)}` : ''),
+        '/statistics/level-three/export' + (filter.q ? `?q=${encodeURIComponent(filter.q)}` : ''),
         { responseType: 'blob' },
       );
       const url = URL.createObjectURL(res.data);
@@ -69,11 +69,11 @@ export default function CareerPath() {
       <Card title="Filter">
         <form className="row" onSubmit={(e) => { e.preventDefault(); setFilter(f); }}>
           <div>
-            <label>NIP</label>
-            <input value={f.nip} onChange={set('nip')} />
-            <p className="muted">Kosongkan untuk menampilkan semua data.</p>
+            <label>Kata Kunci</label>
+            <input value={f.q} onChange={set('q')} placeholder="Cari berdasarkan NIP atau Nama…" />
+            <p className="muted">Minimal 2 karakter. Kosongkan untuk menampilkan semua data.</p>
           </div>
-          <button type="submit">Tampilkan</button>
+          <button type="submit">Cari</button>
         </form>
       </Card>
       <Card>

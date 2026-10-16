@@ -58,7 +58,7 @@ function statisticsRouter() {
   r.get(
     '/level-three',
     asyncHandler(async (req, res) => {
-      res.json(await service.levelTiga(req.query.nip));
+      res.json(await service.levelTiga(req.query.nip, req.query.q));
     })
   );
 
@@ -66,7 +66,7 @@ function statisticsRouter() {
   r.get(
     '/level-three/export',
     asyncHandler(async (req, res) => {
-      const { data: rows } = await service.levelTiga(req.query.nip);
+      const { data: rows } = await service.levelTiga(req.query.nip, req.query.q);
       const fmt = (v) => (v instanceof Date ? v.toISOString().slice(0, 10) : v ? String(v).slice(0, 10) : '');
       const status = (v) => (String(v) === '0' ? 'Aktif' : String(v) === '1' ? 'Arsip' : '-');
 

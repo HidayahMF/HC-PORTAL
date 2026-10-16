@@ -56,9 +56,19 @@ function geteduchart(andSql = '', params = {}) {
   );
 }
 
-function getEmpjabatanlevel(nip) {
-  const where = nip ? 'where a.NIP=@nip' : '';
-  const params = nip ? { nip } : {};
+function getEmpjabatanlevel(nip, q) {
+  const where = [];
+  const params = {};
+  if (nip) {
+    where.push('a.NIP = @nip');
+    params.nip = nip;
+  }
+  const term = String(q ?? '').trim();
+  if (term.length >= 2) {
+    where.push('(a.NIP LIKE @q OR b.Name LIKE @q)');
+    params.q = `%${term}%`;
+  }
+  const clause = where.length ? `where ${where.join(' and ')}` : '';
   return query(
     `select a.NIP,
             RTRIM(ISNULL(b.Name, '')) AS Name,
@@ -69,7 +79,7 @@ function getEmpjabatanlevel(nip) {
        from [BMC].dbo.hris_EmployeeCareerPath a
        left join [BMC].dbo.hris_Employee b on a.NIP = b.NIP
        left join [BMC].dbo.hris_Jobtitle c on a.Id_Jobtitle = c.Id_Jobtitle
-       ${where} order by a.NIP, a.is_Archive`,
+       ${clause} order by a.NIP, a.is_Archive`,
     params
   );
 }
@@ -256,8 +266,8 @@ async function levelFamily(nip) {
 }
 
 // leveltiga() hris.php:871
-async function levelTiga(nip) {
-  return { data: await getEmpjabatanlevel(nip) };
+async function levelTiga(nip, q) {
+  return { data: await getEmpjabatanlevel(nip, q) };
 }
 
 // levelempat() hris.php:877
