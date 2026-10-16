@@ -57,15 +57,20 @@ function geteduchart(andSql = '', params = {}) {
 }
 
 function getEmpjabatanlevel(nip) {
+  const where = nip ? 'where a.NIP=@nip' : '';
+  const params = nip ? { nip } : {};
   return query(
-    `select d.JobSeq,a.NIP,upper(b.Division)as Division,c.Name,a.StartDate,a.EndDate,a.Jobtitle,b.Joblevel,CategoryName
-     from [BMC].dbo.hris_EmployeeCareerPath a
-     left join [BMC].dbo.hris_Jobtitle b on a.Id_Jobtitle=b.Id_Jobtitle
-     left join [BMC].dbo.hris_Employee c on a.NIP=c.NIP
-     left join [BMC].dbo.hris_Joblevel d on b.Joblevel=d.Joblevel
-     left join [BMC].dbo.hris_Category e on a.Id_Category=e.Id_Category
-     where a.NIP=@nip AND a.is_Archive=0 order by Id_CareerPath`,
-    { nip: nip ?? '' }
+    `select a.NIP,
+            RTRIM(ISNULL(b.Name, '')) AS Name,
+            RTRIM(ISNULL(a.Jobtitle, '')) AS Jobtitle,
+            a.StartDate,
+            a.EndDate,
+            a.is_Archive
+       from [BMC].dbo.hris_EmployeeCareerPath a
+       left join [BMC].dbo.hris_Employee b on a.NIP = b.NIP
+       left join [BMC].dbo.hris_Jobtitle c on a.Id_Jobtitle = c.Id_Jobtitle
+       ${where} order by a.NIP, a.is_Archive`,
+    params
   );
 }
 

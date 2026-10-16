@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '../auth/AuthContext.jsx';
 import {
   IcGrid, IcUser, IcOrg, IcClock, IcUsers, IcCalendar,
-  IcPoll, IcReport, IcLogout, IcSearch, IcBell, IcChevron, IcMenu, IcClose,
+  IcPoll, IcReport, IcLogout, IcSearch, IcBell, IcChevron, IcMenu, IcClose, IcCap,
 } from '../app/icons.jsx';
 
 const NAV = [
@@ -17,6 +17,7 @@ const NAV = [
         { label: 'Karyawan Sementara', to: '/hris/temporary' },
         { label: 'Tabel Karyawan', to: '/hris/export/employees' },
       ] },
+      { label: 'CareerPath', to: '/hris/career-path', icon: IcCap },
       { label: 'Organisasi', icon: IcOrg, children: [
         { label: 'Divisi', to: '/hris/divisions' },
         { label: 'Departemen', to: '/hris/departments' },

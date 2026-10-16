@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const ExcelJS = require('exceljs');
 const { asyncHandler } = require('../../lib/http.js');
 const service = require('./service.js');
 
@@ -58,6 +59,49 @@ function statisticsRouter() {
     '/level-three',
     asyncHandler(async (req, res) => {
       res.json(await service.levelTiga(req.query.nip));
+    })
+  );
+
+  // hris.php:871 leveltiga() -> export xlsx
+  r.get(
+    '/level-three/export',
+    asyncHandler(async (req, res) => {
+      const { data: rows } = await service.levelTiga(req.query.nip);
+      const fmt = (v) => (v instanceof Date ? v.toISOString().slice(0, 10) : v ? String(v).slice(0, 10) : '');
+      const status = (v) => (String(v) === '0' ? 'Aktif' : String(v) === '1' ? 'Arsip' : '-');
+
+      const wb = new ExcelJS.Workbook();
+      wb.creator = 'HC Portal HRIS';
+      wb.created = new Date();
+      const ws = wb.addWorksheet('Career Path');
+      ws.columns = [
+        { header: 'NIP', key: 'NIP', width: 12 },
+        { header: 'Nama', key: 'Name', width: 28 },
+        { header: 'Jabatan', key: 'Jobtitle', width: 36 },
+        { header: 'Mulai', key: 'Mulai', width: 14 },
+        { header: 'Selesai', key: 'Selesai', width: 14 },
+        { header: 'Status', key: 'Status', width: 10 },
+      ];
+      for (const r of rows) {
+        ws.addRow({
+          NIP: r.NIP,
+          Name: r.Name,
+          Jobtitle: r.Jobtitle,
+          Mulai: fmt(r.StartDate),
+          Selesai: fmt(r.EndDate),
+          Status: status(r.is_Archive),
+        });
+      }
+      ws.getRow(1).font = { bold: true };
+      ws.getRow(1).alignment = { vertical: 'middle' };
+      ws.autoFilter = { from: 'A1', to: 'F1' };
+      ws.views = [{ state: 'frozen', ySplit: 1 }];
+
+      const stamp = new Date().toISOString().slice(0, 10);
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.setHeader('Content-Disposition', `attachment; filename="careerpath-${stamp}.xlsx"`);
+      await wb.xlsx.write(res);
+      res.end();
     })
   );
 

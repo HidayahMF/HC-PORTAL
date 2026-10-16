@@ -42,6 +42,7 @@ import Age from './pages/statistics/Age.jsx';
 import EmployeeList from './pages/statistics/EmployeeList.jsx';
 import Retired from './pages/statistics/Retired.jsx';
 import LevelTwo from './pages/statistics/LevelTwo.jsx';
+import CareerPath from './pages/statistics/CareerPath.jsx';
 
 import ManResource from './pages/manpower/ManResource.jsx';
 import StrategicPlanning from './pages/manpower/StrategicPlanning.jsx';
@@ -106,6 +107,7 @@ export default function App() {
         <Route path="statistics/employees" element={<EmployeeList />} />
         <Route path="statistics/retired" element={<Retired />} />
         <Route path="statistics/level-two" element={<LevelTwo />} />
+        <Route path="career-path" element={<CareerPath />} />
 
         <Route path="manpower/resource" element={<ManResource />} />
         <Route path="manpower/strategic" element={<StrategicPlanning />} />
