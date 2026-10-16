@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Page, Card, DataTable } from '../../components/ui.jsx';
 import { useFetch } from '../../api/useFetch.js';
 import api, { errMsg } from '../../api/client.js';
@@ -29,10 +29,14 @@ export default function CareerPath() {
   const [eerr, setEerr] = useState('');
   const doneTimer = useRef(null);
 
-  const path = filter.q
-    ? `/statistics/level-three?q=${encodeURIComponent(filter.q)}`
-    : '/statistics/level-three';
-  const { data, loading, error } = useFetch(path, [filter.q]);
+  useEffect(() => {
+    const t = setTimeout(() => setFilter({ q: f.q.trim() }), 300);
+    return () => clearTimeout(t);
+  }, [f.q]);
+
+  const term = filter.q.length >= 2 ? filter.q : '';
+  const path = term ? `/statistics/level-three?q=${encodeURIComponent(term)}` : '/statistics/level-three';
+  const { data, loading, error } = useFetch(path, [term]);
   const rows = data?.data || [];
 
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
@@ -44,7 +48,7 @@ export default function CareerPath() {
     setDone(false);
     try {
       const res = await api.get(
-        '/statistics/level-three/export' + (filter.q ? `?q=${encodeURIComponent(filter.q)}` : ''),
+        '/statistics/level-three/export' + (term ? `?q=${encodeURIComponent(term)}` : ''),
         { responseType: 'blob' },
       );
       const url = URL.createObjectURL(res.data);
@@ -67,13 +71,12 @@ export default function CareerPath() {
   return (
     <Page title="CareerPath" actions={<button type="button" onClick={exportXlsx} disabled={busy || rows.length === 0} aria-live="polite" aria-label={exportLabel} className={`btn active:scale-[0.97] transition-transform ${done ? 'accent' : ''}`}>{busy ? (<svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><circle cx="12" cy="12" r="9" opacity=".25" /><path d="M21 12a9 9 0 0 0-9-9" /></svg>) : done ? (<svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m4 12 5 5L20 6" /></svg>) : null}{exportLabel}</button>}>
       <Card title="Filter">
-        <form className="row" onSubmit={(e) => { e.preventDefault(); setFilter(f); }}>
+        <form className="row" onSubmit={(e) => { e.preventDefault(); setFilter({ q: f.q.trim() }); }}>
           <div>
             <label>Kata Kunci</label>
             <input value={f.q} onChange={set('q')} placeholder="Cari berdasarkan NIP atau Nama…" />
-            <p className="muted">Minimal 2 karakter. Kosongkan untuk menampilkan semua data.</p>
+            <p className="muted">Ketik untuk mencari. Minimal 2 karakter. Kosongkan untuk menampilkan semua data.</p>
           </div>
-          <button type="submit">Cari</button>
         </form>
       </Card>
       <Card>
