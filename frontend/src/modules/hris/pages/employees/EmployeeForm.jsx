@@ -72,7 +72,10 @@ export default function EmployeeForm({ mode = 'insert' }) {
 
   const set = (src) => (e) => setForm((f) => ({ ...f, [src]: e.target.value }));
   const put = (src) => (v) => setForm((f) => ({ ...f, [src]: v }));
-  const deptOptions = (depts || []).map((d) => [d.DepartID, `${d.DepartID} | ${d.NamaDepartemen}`]);
+  const deptOptions = (depts || []).map((d) => {
+    const value = String(d.DepartID ?? '').trim();
+    return [value, `${value} | ${d.NamaDepartemen}`];
+  });
 
   async function submit(e) {
     e.preventDefault();
@@ -86,7 +89,8 @@ export default function EmployeeForm({ mode = 'insert' }) {
       const res = editing
         ? await api.put('/employees/profiles/' + nip, fd)
         : await api.post('/employees/profiles', fd);
-      navigate('/hris/employees/' + (res.data?.nip || (editing ? nip : form.nip)));
+      const savedNip = res.data?.nip || (editing ? nip : form.nip);
+      navigate(`/hris/employees/${encodeURIComponent(savedNip)}/edit`);
     } catch (e2) {
       setErr(errMsg(e2));
     } finally {
@@ -122,9 +126,13 @@ export default function EmployeeForm({ mode = 'insert' }) {
                   {f.type === 'textarea' ? (
                     <textarea value={form[f.src] || ''} onChange={set(f.src)} />
                   ) : f.type === 'select' ? (
-                    <Select value={form[f.src] || ''} options={f.options} onChange={put(f.src)} />
+                    <Select
+                      value={typeof form[f.src] === 'string' ? form[f.src].trim() : (form[f.src] || '')}
+                      options={f.options}
+                      onChange={put(f.src)}
+                    />
                   ) : f.type === 'dept' ? (
-                    <Select searchable value={form[f.src] || ''} options={deptOptions} placeholder="-- Pilih Departemen --" onChange={put(f.src)} />
+                     <Select searchable value={String(form[f.src] ?? '').trim()} options={deptOptions} placeholder="-- Pilih Departemen --" onChange={put(f.src)} />
                   ) : f.type === 'date' ? (
                     <DateField value={form[f.src] || ''} onChange={put(f.src)} />
                   ) : (

@@ -41,7 +41,7 @@ async function getEmployee(nipParam, idParam) {
        case when Gender = 'L' then 'Laki-Laki' else 'Perempuan' end as gen,
        case when EmployeeStatus = 'P' then 'Permanent' else 'Contract' end as stt,
        case when MaritalStatus = 'K' then 'Kawin' else 'Tidak Kawin' end as marit,
-       *
+        a.*
      from [BMC].dbo.hris_Employee a
      left join [BMC].dbo.MASCOSTCENTER b on a.DepartID = b.DepartID
      where NIP = @nip and is_Active = '1'`,
