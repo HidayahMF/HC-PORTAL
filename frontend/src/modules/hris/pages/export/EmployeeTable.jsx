@@ -10,8 +10,29 @@ const STATUS_TONE = {
   Kontrak: 'bg-soft text-mut',
 };
 
-const columns = [
-  { key: 'NIP', label: 'NIP', className: 'tnum whitespace-nowrap' },
+const getColumns = (duplicateCounts) => [
+  {
+    key: 'NIP',
+    label: 'NIP',
+    className: 'tnum whitespace-nowrap',
+    render: (r) => {
+      const nip = String(r.NIP ?? '').trim();
+      const count = duplicateCounts.get(nip);
+      return (
+        <>
+          {r.NIP}
+          {count > 1 && (
+            <span
+              title="NIP muncul lebih dari satu kali. Periksa data master karyawan atau career path aktif."
+              className="ml-2 inline-block whitespace-nowrap rounded-md bg-[#fdeaea] px-2 py-0.5 text-[11px] font-semibold text-[#b91c1c]"
+            >
+              Duplikat ({count})
+            </span>
+          )}
+        </>
+      );
+    },
+  },
   { key: 'Name', label: 'Nama', className: 'font-medium' },
   { key: 'DivisionName', label: 'Divisi' },
   { key: 'Departemen', label: 'Departemen' },
@@ -76,6 +97,15 @@ export default function EmployeeTable() {
   const { data, loading, error } = useFetch(path, [term]);
 
   const allRows = useMemo(() => data?.data || [], [data]);
+  const duplicateCounts = useMemo(() => {
+    const counts = new Map();
+    allRows.forEach((row) => {
+      const nip = String(row.NIP ?? '').trim();
+      if (nip) counts.set(nip, (counts.get(nip) || 0) + 1);
+    });
+    return counts;
+  }, [allRows]);
+  const columns = useMemo(() => getColumns(duplicateCounts), [duplicateCounts]);
   const totalRows = allRows.length;
 
   const rows = useMemo(() => {
