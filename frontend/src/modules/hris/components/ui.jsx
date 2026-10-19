@@ -56,11 +56,12 @@ export function DataTable({
   filters = {},
   onFilterChange = null,
   rowKey = null,
+  preserveHeaderWhenEmpty = false,
 }) {
   const canSort = sortable && !!onSortChange;
   const hasFilters = Array.isArray(filterable) && filterable.length > 0;
 
-  if (!rows?.length) {
+  if (!rows?.length && !preserveHeaderWhenEmpty) {
     return (
       <div className="px-5 py-10 text-center text-[13px] text-mut">
         <b className="mb-1 block text-[14px] text-navy">{empty || 'Tidak ada data untuk ditampilkan'}</b>
@@ -109,8 +110,15 @@ export function DataTable({
           )}
         </thead>
         <tbody>
-          {rows.map((r, i) => (
-            <tr key={rowKey ? rowKey(r) : i} className="border-b border-line last:border-0 hover:bg-soft">
+          {!rows?.length && preserveHeaderWhenEmpty ? (
+            <tr>
+              <td colSpan={columns?.length || 1} className="px-5 py-10 text-center text-[13px] text-mut">
+                <b className="mb-1 block text-[14px] text-navy">{empty || 'Tidak ada data untuk ditampilkan'}</b>
+                {emptyHint || 'Ubah filter atau tambahkan data untuk melihat isinya di sini.'}
+              </td>
+            </tr>
+          ) : rows.map((r, i) => (
+            <tr key={rowKey ? rowKey(r, i) : i} className="border-b border-line last:border-0 hover:bg-soft">
               {columns.map((c) => (
                 <td key={c.key} className={`px-4 py-2.5 align-top text-navy${c.className ? ' ' + c.className : ''}`}>
                   {c.render ? c.render(r) : (r[c.key] ?? '-')}

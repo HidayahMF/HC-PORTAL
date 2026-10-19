@@ -26,30 +26,30 @@ const trimRow = (row) => {
 async function getEmployees(q) {
   const term = String(q ?? '').trim();
 
-  /* Filter keyword dibangun dari string tetap; nilai di-bind lewat params. */
+  /* Filter keyword dibangun dari string tetap; nilai di-bind lewat params.
+     Alias kolom mengikuti join shape di bawah (a=Employee, b=MASCOSTCENTER,
+     c=CareerPath, d=Jobtitle, div=Division). */
   const params = {};
   let keywordFilter = '';
   if (term.length >= 2) {
     keywordFilter =
-      ' AND (a.NIP LIKE @q OR a.Name LIKE @q OR b.Jobtitle LIKE @q OR c.Departemen LIKE @q OR f.NamaDepartemen LIKE @q OR d.DivisionName LIKE @q) ';
+      ' AND (a.NIP LIKE @q OR a.Name LIKE @q OR d.Jobtitle LIKE @q OR b.NamaDepartemen LIKE @q OR div.DivisionName LIKE @q) ';
     params.q = `%${term}%`;
   }
 
   const rows = await query(
-    'SELECT a.NIP, a.Name, d.DivisionName, c.Departemen, f.NamaDepartemen AS SubDept, b.Jobtitle, e.CategoryName, ' +
+    'SELECT a.NIP, a.Name, div.DivisionName, b.NamaDepartemen AS Departemen, d.Jobtitle, d.CategoryName, ' +
       "CASE WHEN a.EmployeeStatus='P' THEN 'Tetap' ELSE 'Kontrak' END AS Status, " +
       'a.FirstWorkingDate, a.WorkingDate, a.NIK, a.NPWP, a.Gender, a.BirthDate, a.EducationArchive, a.Address, a.Phone, ' +
       "CASE WHEN a.Child='1' THEN 'K1' WHEN a.Child='2' THEN 'K2' WHEN a.Child='3' THEN 'K3' WHEN a.MaritalStatus='K' THEN 'K0' ELSE 'TK' END AS StatusPajak " +
       'FROM BMC.dbo.hris_Employee a ' +
-      'LEFT OUTER JOIN BMC.dbo.hris_EmployeeCareerPath b ON RIGHT(a.NIP,4) = RIGHT(b.NIP,4) ' +
-      "LEFT OUTER JOIN (SELECT LEFT(DepartID,2) AS grup, NamaDepartemen AS Departemen, Id_Division " +
-      "FROM BMC.dbo.MASCOSTCENTER WHERE LevelDepartemen='Departemen') c ON LEFT(a.DepartID,2) = grup " +
-      'LEFT OUTER JOIN BMC.dbo.MASCOSTCENTER f ON a.DepartID = f.DepartID ' +
-      'LEFT OUTER JOIN BMC.dbo.hris_Division d ON d.Id_Division = c.Id_Division ' +
-      'LEFT OUTER JOIN BMC.dbo.hris_Jobtitle e ON e.Id_Jobtitle = b.Id_Jobtitle ' +
-      "WHERE a.is_Active='1' AND b.is_Archive='0' " +
+      'LEFT JOIN BMC.dbo.MASCOSTCENTER b ON a.DepartID = b.DepartID ' +
+      'LEFT JOIN BMC.dbo.hris_EmployeeCareerPath c ON a.NIP = c.NIP AND c.is_Archive = 0 ' +
+      'LEFT JOIN BMC.dbo.hris_Jobtitle d ON c.Id_Jobtitle = d.Id_Jobtitle ' +
+      'LEFT JOIN BMC.dbo.hris_Division div ON b.Id_Division = div.Id_Division ' +
+      "WHERE a.is_Active = '1' " +
       keywordFilter +
-      'ORDER BY RIGHT(a.NIP,4) DESC',
+      'ORDER BY a.NIP',
     params
   );
 

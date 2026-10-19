@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Page, Card, DataTable } from '../../components/ui.jsx';
 import { useFetch } from '../../api/useFetch.js';
 
@@ -14,7 +15,20 @@ const columns = [
   { key: 'Name', label: 'Nama', className: 'font-medium' },
   { key: 'DivisionName', label: 'Divisi' },
   { key: 'Departemen', label: 'Departemen' },
-  { key: 'Jobtitle', label: 'Jabatan' },
+  {
+    key: 'Jobtitle',
+    label: 'Jabatan',
+    render: (r) =>
+      r.Jobtitle ? r.Jobtitle.trim() : (
+        <Link
+          to={`/hris/employees/${encodeURIComponent(r.NIP ?? '')}`}
+          title="Isi job title / career path di halaman karyawan"
+          className="inline-block whitespace-nowrap rounded-md bg-[#fdeaea] px-2 py-0.5 text-[11px] font-semibold text-[#b91c1c] no-underline hover:underline"
+        >
+          <span aria-hidden="true">⚠</span> Jobtitle kosong — isi
+        </Link>
+      ),
+  },
   { key: 'CategoryName', label: 'Kategori' },
   {
     key: 'Status',
@@ -50,8 +64,8 @@ const columns = [
 export default function EmployeeTable() {
   const [keyword, setKeyword] = useState('');
   const [term, setTerm] = useState('');
-  const [filters, setFilters] = useState({});
   const [sort, setSort] = useState(null);
+  const [filters, setFilters] = useState({});
 
   useEffect(() => {
     const t = setTimeout(() => setTerm(keyword.trim()), 300);
@@ -66,13 +80,11 @@ export default function EmployeeTable() {
 
   const rows = useMemo(() => {
     let out = allRows;
-    const active = Object.entries(filters).filter(([, v]) => (v || '').trim() !== '');
+    const active = Object.entries(filters).filter(([, value]) => String(value ?? '').trim() !== '');
     if (active.length) {
-      out = out.filter((r) =>
-        active.every(([key, v]) =>
-          String(r[key] ?? '').toLowerCase().includes(String(v ?? '').toLowerCase()),
-        ),
-      );
+      out = out.filter((row) => active.every(([key, value]) =>
+        String(row[key] ?? '').toLowerCase().includes(String(value).trim().toLowerCase())
+      ));
     }
     if (sort?.key) {
       const k = sort.key;
@@ -81,13 +93,20 @@ export default function EmployeeTable() {
         const av = a[k];
         const bv = b[k];
         if (typeof av === 'number' && typeof bv === 'number') return (av - bv) * dir;
-        const as = String(av ?? '');
-        const bs = String(bv ?? '');
+        const as = String(av ?? '').trim();
+        const bs = String(bv ?? '').trim();
+        if (k === 'NIP') {
+          const an = as.replace(/\D/g, '');
+          const bn = bs.replace(/\D/g, '');
+          if (an && bn) return an.padStart(12, '0').localeCompare(bn.padStart(12, '0')) * dir;
+        }
         return as.localeCompare(bs, undefined, { numeric: true, sensitivity: 'base' }) * dir;
       });
     }
     return out;
   }, [allRows, filters, sort]);
+
+  const onFilterChange = (key, value) => setFilters((current) => ({ ...current, [key]: value }));
 
   const onSortChange = (key) => {
     setSort((s) => {
@@ -96,8 +115,6 @@ export default function EmployeeTable() {
       return { key, dir: 'asc' };
     });
   };
-
-  const onFilterChange = (key, value) => setFilters((f) => ({ ...f, [key]: value }));
 
   return (
     <Page title="Tabel Karyawan">
@@ -142,7 +159,8 @@ export default function EmployeeTable() {
               filterable={FILTERABLE}
               filters={filters}
               onFilterChange={onFilterChange}
-              rowKey={(r) => r.NIP || r.NIK || `${r.Name ?? ''}-${r.WorkingDate ?? ''}`}
+              preserveHeaderWhenEmpty
+              rowKey={(r, i) => `${r.NIP || r.NIK || r.Name || 'row'}-${r.Jobtitle || ''}-${r.WorkingDate || ''}-${i}`}
             />
           </>
         )}
