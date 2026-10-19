@@ -9,8 +9,8 @@ function exportRouter() {
   // hris/emp_datatable()
   r.get(
     '/employees',
-    asyncHandler(async (_req, res) => {
-      res.json({ data: await service.getEmployees() });
+    asyncHandler(async (req, res) => {
+      res.json({ data: await service.getEmployees(req.query.q) });
     })
   );
 

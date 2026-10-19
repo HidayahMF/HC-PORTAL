@@ -23,7 +23,18 @@ const trimRow = (row) => {
 };
 
 /* Padanan hris/emp_datatable() (export data karyawan). */
-async function getEmployees() {
+async function getEmployees(q) {
+  const term = String(q ?? '').trim();
+
+  /* Filter keyword dibangun dari string tetap; nilai di-bind lewat params. */
+  const params = {};
+  let keywordFilter = '';
+  if (term.length >= 2) {
+    keywordFilter =
+      ' AND (a.NIP LIKE @q OR a.Name LIKE @q OR b.Jobtitle LIKE @q OR c.Departemen LIKE @q OR f.NamaDepartemen LIKE @q OR d.DivisionName LIKE @q) ';
+    params.q = `%${term}%`;
+  }
+
   const rows = await query(
     'SELECT a.NIP, a.Name, d.DivisionName, c.Departemen, f.NamaDepartemen AS SubDept, b.Jobtitle, e.CategoryName, ' +
       "CASE WHEN a.EmployeeStatus='P' THEN 'Tetap' ELSE 'Kontrak' END AS Status, " +
@@ -37,7 +48,9 @@ async function getEmployees() {
       'LEFT OUTER JOIN BMC.dbo.hris_Division d ON d.Id_Division = c.Id_Division ' +
       'LEFT OUTER JOIN BMC.dbo.hris_Jobtitle e ON e.Id_Jobtitle = b.Id_Jobtitle ' +
       "WHERE a.is_Active='1' AND b.is_Archive='0' " +
-      'ORDER BY RIGHT(a.NIP,4) DESC'
+      keywordFilter +
+      'ORDER BY RIGHT(a.NIP,4) DESC',
+    params
   );
 
   return rows.map((raw) => {
