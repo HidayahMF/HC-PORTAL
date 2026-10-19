@@ -4,7 +4,13 @@ const { httpError } = require('../lib/http.js');
 
 function signToken(user) {
   return jwt.sign(
-    { sub: user.username, name: user.name ?? user.username, role: user.role ?? 'hr' },
+    {
+      sub: user.username,
+      name: user.name ?? user.username,
+      role: user.role ?? 'hr',
+      DepartID: user.DepartID,
+      canDeactivateEmployees: user.canDeactivateEmployees === true,
+    },
     config.jwt.secret,
     { expiresIn: config.jwt.expires }
   );

@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Page, Card, DataTable } from '../../components/ui.jsx';
 import { useFetch } from '../../api/useFetch.js';
+import api, { errMsg } from '../../api/client.js';
+import { useAuth } from '../../auth/AuthContext.jsx';
 
 const FILTERABLE = ['NIP', 'Name', 'Jobtitle', 'Departemen', 'DivisionName', 'Status', 'CategoryName'];
 
@@ -10,7 +12,12 @@ const STATUS_TONE = {
   Kontrak: 'bg-soft text-mut',
 };
 
-const getColumns = (duplicateCounts) => [
+const getColumns = (duplicateCounts, selected, toggle) => [
+  {
+    key: '_select',
+    label: '',
+    render: (r) => <input type="checkbox" aria-label={`Pilih ${r.NIP}`} checked={selected.has(String(r.NIP ?? '').trim())} onChange={() => toggle(r.NIP)} />,
+  },
   {
     key: 'NIP',
     label: 'NIP',
@@ -52,6 +59,7 @@ const getColumns = (duplicateCounts) => [
       ),
   },
   { key: 'CategoryName', label: 'Kategori' },
+  { key: 'is_Active', label: 'Status HRIS', render: (r) => r.is_Active === '1' ? 'Aktif' : 'Nonaktif' },
   {
     key: 'Status',
     label: 'Status',
@@ -88,6 +96,12 @@ export default function EmployeeTable() {
   const [term, setTerm] = useState('');
   const [sort, setSort] = useState(null);
   const [filters, setFilters] = useState({});
+  const [selected, setSelected] = useState(new Set());
+  const [actionError, setActionError] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [actionOpen, setActionOpen] = useState(null);
+  const [reason, setReason] = useState('');
+  const { user } = useAuth();
 
   useEffect(() => {
     const t = setTimeout(() => setTerm(keyword.trim()), 300);
@@ -95,7 +109,7 @@ export default function EmployeeTable() {
   }, [keyword]);
 
   const path = term.length >= 2 ? `/export/employees?q=${encodeURIComponent(term)}` : '/export/employees';
-  const { data, loading, error } = useFetch(path, [term]);
+  const { data, loading, error, reload } = useFetch(path, [term]);
 
   const allRows = useMemo(() => data?.data || [], [data]);
   const duplicateCounts = useMemo(() => {
@@ -106,7 +120,22 @@ export default function EmployeeTable() {
     });
     return counts;
   }, [allRows]);
-  const columns = useMemo(() => getColumns(duplicateCounts), [duplicateCounts]);
+  const toggle = (nip) => setSelected((current) => { const next = new Set(current); const key = String(nip ?? '').trim(); next.has(key) ? next.delete(key) : next.add(key); return next; });
+  const columns = useMemo(() => getColumns(duplicateCounts, selected, toggle), [duplicateCounts, selected]);
+  const activeNips = useMemo(() => new Set(allRows.filter((row) => selected.has(String(row.NIP ?? '').trim()) && row.is_Active === '1').map((row) => String(row.NIP).trim())), [allRows, selected]);
+  const inactiveNips = useMemo(() => new Set(allRows.filter((row) => selected.has(String(row.NIP ?? '').trim()) && row.is_Active !== '1').map((row) => String(row.NIP).trim())), [allRows, selected]);
+  const cancelAction = () => { if (!busy) { setActionOpen(null); setReason(''); setActionError(''); } };
+  const openAction = (action) => { setReason(''); setActionError(''); setActionOpen(action); };
+  const confirmAction = async () => {
+    if (actionOpen === 'deactivate' && !reason.trim()) { setActionError('Alasan wajib diisi.'); return; }
+    const nips = [...(actionOpen === 'deactivate' ? activeNips : inactiveNips)];
+    setBusy(true); setActionError('');
+    try {
+      await api.post('/export/employees/deactivate', { action: actionOpen, nips, ...(actionOpen === 'deactivate' ? { reason } : {}) });
+      setActionOpen(null); setReason(''); setSelected(new Set()); reload();
+    } catch (e) { setActionError(errMsg(e)); }
+    finally { setBusy(false); }
+  };
   const totalRows = allRows.length;
 
   const rows = useMemo(() => {
@@ -174,13 +203,18 @@ export default function EmployeeTable() {
         </form>
 
         {error && <p className="err">{error}</p>}
+        {actionError && <p className="err">{actionError}</p>}
+        {user?.canDeactivateEmployees && activeNips.size > 0 && <button type="button" className="btn mb-3 ml-4" disabled={busy} onClick={() => openAction('deactivate')}>{busy ? 'Memproses...' : `Nonaktifkan (${activeNips.size})`}</button>}
+        {user?.canDeactivateEmployees && inactiveNips.size > 0 && <button type="button" className="btn mb-3 ml-2" disabled={busy} onClick={() => openAction('activate')}>{busy ? 'Memproses...' : `Aktifkan (${inactiveNips.size})`}</button>}
         {loading ? (
           <p className="muted">Memuat...</p>
         ) : (
           <>
-            <p className="px-4 py-2.5 text-[12px] text-mut">
-              Total {rows.length} data dari {totalRows} karyawan aktif.
-            </p>
+            <div className="flex items-center gap-2 px-4 py-2.5 text-[12px] text-mut">
+              <input type="checkbox" aria-label="Pilih semua karyawan" checked={rows.length > 0 && rows.every((r) => selected.has(String(r.NIP ?? '').trim()))} onChange={(e) => setSelected(e.target.checked ? new Set(rows.map((r) => String(r.NIP ?? '').trim())) : new Set())} />
+              <span>Pilih semua</span>
+              <span>Total {rows.length} data dari {totalRows} karyawan.</span>
+            </div>
             <DataTable
               columns={columns}
               rows={rows}
@@ -194,6 +228,34 @@ export default function EmployeeTable() {
               rowKey={(r, i) => `${r.NIP || r.NIK || r.Name || 'row'}-${r.Jobtitle || ''}-${r.WorkingDate || ''}-${i}`}
             />
           </>
+        )}
+        {actionOpen && (
+          <div
+            className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4"
+            role="presentation"
+            onMouseDown={(e) => { if (e.target === e.currentTarget && !busy) cancelAction(); }}
+          >
+            <div className="w-full max-w-md rounded-xl border border-line bg-white p-5 shadow-xl" role="dialog" aria-modal="true" aria-labelledby="employee-action-title">
+              <h2 id="employee-action-title" className="text-lg font-bold text-navy">{actionOpen === 'activate' ? 'Aktifkan Karyawan' : 'Nonaktifkan Karyawan'}</h2>
+              <p className="mt-1 text-sm text-mut">{actionOpen === 'activate' ? inactiveNips.size : activeNips.size} karyawan akan {actionOpen === 'activate' ? 'diaktifkan' : 'dinonaktifkan'}.</p>
+              {actionOpen === 'deactivate' && <><label htmlFor="deactivate-reason" className="mt-4 block">Alasan</label>
+              <textarea
+                id="deactivate-reason"
+                className="mt-1 w-full rounded-md border border-line bg-white px-3 py-2 text-[13px] text-navy placeholder:text-mut/70"
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                maxLength={500}
+                autoFocus
+                placeholder="Tulis alasan nonaktif..."
+              />
+              <p className="mt-1 text-right text-xs text-mut">{reason.length}/500</p></>}
+              {actionError && <p className="err" role="alert">{actionError}</p>}
+              <div className="mt-5 flex justify-end gap-2">
+                <button type="button" className="btn sec" onClick={cancelAction} disabled={busy}>Batal</button>
+                <button type="button" className="btn danger" onClick={confirmAction} disabled={busy || (actionOpen === 'deactivate' && !reason.trim())}>{busy ? 'Memproses...' : actionOpen === 'activate' ? 'Aktifkan' : 'Nonaktifkan'}</button>
+              </div>
+            </div>
+          </div>
         )}
       </Card>
     </Page>
