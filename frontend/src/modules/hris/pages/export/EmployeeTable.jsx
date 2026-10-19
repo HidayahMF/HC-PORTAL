@@ -22,12 +22,13 @@ const getColumns = (duplicateCounts) => [
         <>
           {r.NIP}
           {count > 1 && (
-            <span
+            <Link
+              to={`/hris/career-path?q=${encodeURIComponent(nip)}`}
               title="NIP muncul lebih dari satu kali. Periksa data master karyawan atau career path aktif."
-              className="ml-2 inline-block whitespace-nowrap rounded-md bg-[#fdeaea] px-2 py-0.5 text-[11px] font-semibold text-[#b91c1c]"
+              className="ml-2 inline-flex items-center whitespace-nowrap rounded-md bg-[#fdeaea] px-2 py-0.5 text-[11px] font-semibold text-[#b91c1c] no-underline hover:bg-[#f6d9d9] hover:underline"
             >
-              Duplikat ({count})
-            </span>
+              ⚠ Duplikat ({count}) — lihat CareerPath
+            </Link>
           )}
         </>
       );

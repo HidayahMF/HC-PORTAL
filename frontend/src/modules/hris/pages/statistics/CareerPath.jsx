@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Page, Card, DataTable } from '../../components/ui.jsx';
 import { useFetch } from '../../api/useFetch.js';
 import api, { errMsg } from '../../api/client.js';
@@ -22,8 +23,10 @@ const COLS = [
 ];
 
 export default function CareerPath() {
-  const [f, setF] = useState({ q: '' });
-  const [filter, setFilter] = useState(f);
+  const [searchParams] = useSearchParams();
+  const initialQ = searchParams.get('q') || '';
+  const [f, setF] = useState({ q: initialQ });
+  const [filter, setFilter] = useState({ q: initialQ });
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
   const [eerr, setEerr] = useState('');
