@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Page, Card, DataTable } from '../../components/ui.jsx';
 import { useFetch } from '../../api/useFetch.js';
 
-const FILTERABLE = ['NIP', 'Name', 'Jobtitle', 'Departemen', 'SubDept', 'DivisionName', 'Status', 'CategoryName'];
+const FILTERABLE = ['NIP', 'Name', 'Jobtitle', 'Departemen', 'DivisionName', 'Status', 'CategoryName'];
 
 const STATUS_TONE = {
   Tetap: 'bg-lime-soft text-navy',
@@ -14,7 +14,6 @@ const columns = [
   { key: 'Name', label: 'Nama', className: 'font-medium' },
   { key: 'DivisionName', label: 'Divisi' },
   { key: 'Departemen', label: 'Departemen' },
-  { key: 'SubDept', label: 'Sub Departemen' },
   { key: 'Jobtitle', label: 'Jabatan' },
   { key: 'CategoryName', label: 'Kategori' },
   {
