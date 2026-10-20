@@ -59,7 +59,7 @@ async function login(nipRaw, password) {
     throw httpError(403, 'Akses HRIS hanya untuk Departemen 0300');
   }
 
-  return { username: clean(row.NIP), name: clean(row.Name), role: 'employee' };
+  return { username: clean(row.NIP), name: clean(row.Name), role: 'employee', DepartID: clean(row.DepartID), canDeactivateEmployees: clean(row.DepartID) === '0300' };
 }
 
 module.exports = { ddmmyyToIso, login };
