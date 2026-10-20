@@ -53,6 +53,7 @@ export function DataTable({
   sort = null,
   onSortChange = null,
   filterable = [],
+  filterOptions = {},
   filters = {},
   onFilterChange = null,
   rowKey = null,
@@ -95,7 +96,16 @@ export function DataTable({
             <tr className="border-y border-line">
               {columns.map((c) => (
                 <th key={c.key} className="whitespace-nowrap px-4 py-2 font-normal">
-                  {filterable.includes(c.key) ? (
+                  {filterable.includes(c.key) ? filterOptions[c.key] ? (
+                    <select
+                      className="w-full rounded-md border border-line bg-white px-2 py-1 text-[11.5px] font-normal normal-case text-navy"
+                      value={filters[c.key] ?? ''}
+                      onChange={(e) => onFilterChange && onFilterChange(c.key, e.target.value)}
+                    >
+                      <option value="">Semua</option>
+                      {filterOptions[c.key].map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                    </select>
+                  ) : (
                     <input
                       type="text"
                       className="w-full rounded-md border border-line bg-white px-2 py-1 text-[11.5px] font-normal normal-case text-navy placeholder:text-mut/70"

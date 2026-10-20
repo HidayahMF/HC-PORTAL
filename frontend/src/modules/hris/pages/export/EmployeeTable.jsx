@@ -150,9 +150,10 @@ export default function EmployeeTable() {
     let out = allRows;
     const active = Object.entries(filters).filter(([, value]) => String(value ?? '').trim() !== '');
     if (active.length) {
-      out = out.filter((row) => active.every(([key, value]) =>
-        String(row[key] ?? '').toLowerCase().includes(String(value).trim().toLowerCase())
-      ));
+      out = out.filter((row) => active.every(([key, value]) => {
+        if (key === 'is_Active') return String(row.is_Active ?? '') === String(value).trim();
+        return String(row[key] ?? '').toLowerCase().includes(String(value).trim().toLowerCase());
+      }));
     }
     if (sort?.key) {
       const k = sort.key;
@@ -230,6 +231,7 @@ export default function EmployeeTable() {
               sort={sort}
               onSortChange={onSortChange}
               filterable={FILTERABLE}
+              filterOptions={{ is_Active: [['1', 'Aktif'], ['0', 'Tidak aktif']] }}
               filters={filters}
               onFilterChange={onFilterChange}
               preserveHeaderWhenEmpty
