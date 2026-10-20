@@ -9,11 +9,11 @@ async function searchEmployees(term, limit = 10) {
   const q = String(term ?? '').trim();
   if (q.length < 2) return [];
   return query(
-    `SELECT TOP (@limit) a.NIP, RTRIM(a.Name) AS Name,
+    `SELECT TOP (@limit) a.NIP, RTRIM(a.Name) AS Name, a.is_Active,
             ISNULL(m.NamaDepartemen, '-') AS Department
      FROM BMC.dbo.hris_Employee a
      LEFT JOIN BMC.dbo.MASCOSTCENTER m ON a.DepartID = m.DepartID
-     WHERE a.is_Active = '1' AND (a.Name LIKE @like OR a.NIP LIKE @like)
+     WHERE (a.Name LIKE @like OR a.NIP LIKE @like)
      ORDER BY a.Name`,
     { limit: Number(limit) || 10, like: `%${q}%` }
   );
@@ -44,7 +44,7 @@ async function getEmployee(nipParam, idParam) {
         a.*
      from [BMC].dbo.hris_Employee a
      left join [BMC].dbo.MASCOSTCENTER b on a.DepartID = b.DepartID
-     where NIP = @nip and is_Active = '1'`,
+     where NIP = @nip`,
     { nip }
   );
 

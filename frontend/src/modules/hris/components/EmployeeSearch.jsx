@@ -79,7 +79,10 @@ export default function EmployeeSearch({ autoFocus = false }) {
                 <span className="block truncate font-semibold text-navy">{it.Name}</span>
                 <span className="block truncate text-[11.5px] text-mut">{it.Department}</span>
               </span>
-              <span className="shrink-0 text-[11.5px] text-mut tnum">{it.NIP}</span>
+              <span className="flex shrink-0 items-center gap-2 text-[11.5px] text-mut tnum">
+                {it.is_Active === '0' && <span className="rounded-md bg-[#fdeaea] px-2 py-0.5 font-semibold text-[#b91c1c]">Tidak aktif</span>}
+                {it.NIP}
+              </span>
             </button>
           ))}
         </div>

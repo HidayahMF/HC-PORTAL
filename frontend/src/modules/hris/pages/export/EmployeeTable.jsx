@@ -5,7 +5,7 @@ import { useFetch } from '../../api/useFetch.js';
 import api, { errMsg } from '../../api/client.js';
 import { useAuth } from '../../auth/AuthContext.jsx';
 
-const FILTERABLE = ['NIP', 'Name', 'Jobtitle', 'Departemen', 'DivisionName', 'Status', 'CategoryName'];
+const FILTERABLE = ['NIP', 'Name', 'Jobtitle', 'Departemen', 'DivisionName', 'Status', 'CategoryName', 'is_Active'];
 
 const STATUS_TONE = {
   Tetap: 'bg-lime-soft text-navy',
@@ -59,7 +59,15 @@ const getColumns = (duplicateCounts, selected, toggle) => [
       ),
   },
   { key: 'CategoryName', label: 'Kategori' },
-  { key: 'is_Active', label: 'Status HRIS', render: (r) => r.is_Active === '1' ? 'Aktif' : 'Nonaktif' },
+  {
+    key: 'is_Active',
+    label: 'Status HRIS',
+    render: (r) => r.is_Active === '1' ? (
+      <span className="inline-block whitespace-nowrap rounded-md bg-lime-soft px-2 py-0.5 text-[11px] font-semibold text-navy">Aktif</span>
+    ) : (
+      <span className="inline-block whitespace-nowrap rounded-md bg-[#fdeaea] px-2 py-0.5 text-[11px] font-semibold text-[#b91c1c]">Tidak aktif</span>
+    ),
+  },
   {
     key: 'Status',
     label: 'Status',
