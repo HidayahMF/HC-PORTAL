@@ -1,4 +1,5 @@
-const { query } = require('../../db/pool.js');
+const { query, execute } = require('../../db/pool.js');
+const { httpError } = require('../../lib/http.js');
 
 function fmtDate(d) {
   const m = String(d.getMonth() + 1).padStart(2, '0');
@@ -70,7 +71,8 @@ function getEmpjabatanlevel(nip, q) {
   }
   const clause = where.length ? `where ${where.join(' and ')}` : '';
   return query(
-    `select a.NIP,
+    `select a.Id_CareerPath,
+            a.NIP,
             RTRIM(ISNULL(b.Name, '')) AS Name,
             RTRIM(ISNULL(a.Jobtitle, '')) AS Jobtitle,
             a.StartDate,
@@ -319,4 +321,14 @@ function dashboardOnline() {
   return { ok: true };
 }
 
-module.exports = { education, educationDept, age, employeeStatus, leveldua, levelFamily, levelTiga, levelEmpat, levelTraining, employees, retired, pkb, dashboardOnline };
+async function archiveCareerPath(id) {
+  const rowId = Number(id);
+  if (!Number.isInteger(rowId) || rowId <= 0) throw httpError(400, 'Id career path tidak valid');
+  await execute(
+    'UPDATE BMC.dbo.hris_EmployeeCareerPath SET is_Archive = 1 WHERE Id_CareerPath = @rowId',
+    { rowId }
+  );
+  return { ok: true };
+}
+
+module.exports = { education, educationDept, age, employeeStatus, leveldua, levelFamily, levelTiga, levelEmpat, levelTraining, employees, retired, pkb, dashboardOnline, archiveCareerPath };

@@ -13,13 +13,14 @@ const fmtDate = (v) => {
 
 const statusText = (v) => (v === '0' ? 'Aktif' : v === '1' ? 'Arsip' : '-');
 
-const COLS = [
+const getCols = (archive) => [
   { key: 'NIP', label: 'NIP' },
   { key: 'Name', label: 'Nama' },
   { key: 'Jobtitle', label: 'Jabatan' },
   { key: 'StartDate', label: 'Mulai', render: (r) => fmtDate(r.StartDate) || '-' },
   { key: 'EndDate', label: 'Selesai', render: (r) => fmtDate(r.EndDate) || '-' },
   { key: 'is_Archive', label: 'Status', render: (r) => statusText(r.is_Archive) },
+  { key: '_action', label: 'Aksi', render: (r) => r.is_Archive === '0' ? <button type="button" className="btn danger" onClick={() => archive(r.Id_CareerPath)}>Nonaktifkan</button> : null },
 ];
 
 export default function CareerPath() {
@@ -41,6 +42,7 @@ export default function CareerPath() {
   const path = term ? `/statistics/level-three?q=${encodeURIComponent(term)}` : '/statistics/level-three';
   const { data, loading, error } = useFetch(path, [term]);
   const rows = data?.data || [];
+  const archive = async (id) => { await api.patch(`/statistics/level-three/${id}/archive`); window.location.reload(); };
 
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
 
@@ -90,7 +92,7 @@ export default function CareerPath() {
           <>
             <p className="muted">Total {rows.length} data.</p>
             <DataTable
-              columns={COLS}
+              columns={getCols(archive)}
               rows={rows}
               empty="Belum ada riwayat jabatan"
               emptyHint="Pastikan NIP benar atau hubungi HRD untuk melengkapi data."

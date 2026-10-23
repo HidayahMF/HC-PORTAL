@@ -63,6 +63,10 @@ function statisticsRouter() {
   );
 
   // hris.php:871 leveltiga() -> export xlsx
+  r.patch('/level-three/:id/archive', asyncHandler(async (req, res) => {
+    res.json(await service.archiveCareerPath(req.params.id));
+  }));
+
   r.get(
     '/level-three/export',
     asyncHandler(async (req, res) => {
