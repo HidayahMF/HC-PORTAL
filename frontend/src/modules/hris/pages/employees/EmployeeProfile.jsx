@@ -64,7 +64,7 @@ function AddRecordModal({ type, nip, onClose, onSaved }) {
     setSaving(true);
     setErr('');
     try {
-      const payload = { id: type, nip, ...f };
+      const payload = { id: type === 'career' ? '2' : type === 'edu' ? '3' : type === 'fam' ? '4' : type === 'tra' ? '5' : '6', nip, ...f };
       if (type === 'career') payload.CategoryName = jtRow?.CategoryName || '';
       await api.post('/employees/records', payload);
       onSaved();
