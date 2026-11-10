@@ -172,7 +172,7 @@ export default function EmployeeForm({ mode = 'insert' }) {
               <button
                 className="btn btn-primary"
                 type="button"
-                onClick={() => navigate(`/hris/employees/${encodeURIComponent(savedNip)}/edit`)}
+                onClick={() => navigate(`/hris/employees/${encodeURIComponent(String(savedNip).trim())}`, { replace: true })}
               >
                 Lihat data karyawan
               </button>
