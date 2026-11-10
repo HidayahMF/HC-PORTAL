@@ -60,6 +60,7 @@ export default function EmployeeForm({ mode = 'insert' }) {
   const [file, setFile] = useState(null);
   const [err, setErr] = useState('');
   const [saving, setSaving] = useState(false);
+  const [savedNip, setSavedNip] = useState('');
 
   useEffect(() => {
     if (!editing || !nip) return;
@@ -89,8 +90,7 @@ export default function EmployeeForm({ mode = 'insert' }) {
       const res = editing
         ? await api.put('/employees/profiles/' + nip, fd)
         : await api.post('/employees/profiles', fd);
-      const savedNip = res.data?.nip || (editing ? nip : form.nip);
-      navigate(`/hris/employees/${encodeURIComponent(savedNip)}/edit`);
+       setSavedNip(res.data?.nip || (editing ? nip : form.nip));
     } catch (e2) {
       setErr(errMsg(e2));
     } finally {
@@ -147,14 +147,49 @@ export default function EmployeeForm({ mode = 'insert' }) {
               <td><FileField file={file} onChange={setFile} /></td>
             </tr>
           </tbody></table>
-          <div className="row" style={{ marginTop: 12, gap: 8 }}>
+           <div className="row" style={{ marginTop: 12, gap: 8 }}>
             <button className="btn btn-primary" type="submit" disabled={saving}>
               {saving ? 'Menyimpan...' : 'Simpan'}
             </button>
             <button className="btn" type="button" onClick={() => navigate(-1)}>Batal</button>
-          </div>
-        </form>
+           </div>
+         </form>
       </Card>
+      {savedNip ? (
+        <div className="modal-backdrop" role="presentation">
+          <section className="success-modal" role="dialog" aria-modal="true" aria-labelledby="employee-save-title">
+            <div className="success-icon" aria-hidden="true">✓</div>
+            <p className="success-kicker">Berhasil disimpan</p>
+            <h2 id="employee-save-title">Data karyawan sudah tersimpan</h2>
+            <p className="success-copy">
+              {editing ? 'Perubahan data karyawan telah diperbarui.' : 'Data karyawan baru telah ditambahkan ke sistem.'}
+            </p>
+            <div className="success-reference">
+              <span>NIP karyawan</span>
+              <strong>{savedNip}</strong>
+            </div>
+            <div className="success-actions">
+              <button
+                className="btn btn-primary"
+                type="button"
+                onClick={() => navigate(`/hris/employees/${encodeURIComponent(savedNip)}/edit`)}
+              >
+                Lihat data karyawan
+              </button>
+              {!editing && (
+                <button className="btn ghost" type="button" onClick={() => window.location.reload()}>
+                  Tambah karyawan lain
+                </button>
+              )}
+              {editing && (
+                <button className="btn ghost" type="button" onClick={() => setSavedNip('')}>
+                  Tetap di halaman ini
+                </button>
+              )}
+            </div>
+          </section>
+        </div>
+      ) : null}
     </Page>
   );
 }

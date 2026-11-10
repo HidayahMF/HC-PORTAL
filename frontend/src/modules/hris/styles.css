@@ -147,6 +147,28 @@ input[type='date'], input[type='datetime-local'], input[type='month'], input[typ
 .muted { color: var(--muted); font-size: 12.5px; }
 .err { color: var(--danger); font-size: 13px; font-weight: 600; }
 .center { display: grid; place-items: center; min-height: 100vh; }
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 50; display: grid; place-items: center;
+  padding: 20px; background: rgba(11, 31, 58, 0.48); backdrop-filter: blur(3px);
+}
+.success-modal {
+  width: min(100%, 440px); padding: 30px; text-align: center; background: var(--white);
+  border: 1px solid var(--border); border-radius: 18px; box-shadow: 0 24px 70px rgba(11, 31, 58, 0.2);
+  animation: modal-in 0.2s var(--ease) both;
+}
+.success-icon {
+  display: grid; place-items: center; width: 54px; height: 54px; margin: 0 auto 16px;
+  border-radius: 50%; background: var(--lime-soft); color: #4d7c0f; font-size: 28px; font-weight: 800;
+}
+.success-kicker { margin: 0 0 6px; color: #4d7c0f; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.success-modal h2 { margin-bottom: 8px; font-size: 21px; }
+.success-copy { margin: 0 auto 20px; color: var(--muted); font-size: 13px; }
+.success-reference { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--soft); text-align: left; }
+.success-reference span { color: var(--muted); font-size: 12px; }
+.success-reference strong { color: var(--navy); font-size: 15px; }
+.success-actions { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+@keyframes modal-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
+@media (max-width: 520px) { .success-modal { padding: 24px 18px; } .success-actions > * { width: 100%; } }
 .pill {
   display: inline-block; padding: 2px 9px; border-radius: 6px;
   font-size: 11px; font-weight: 700; background: var(--soft); color: var(--navy);
