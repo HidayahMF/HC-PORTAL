@@ -331,4 +331,24 @@ async function archiveCareerPath(id) {
   return { ok: true };
 }
 
-module.exports = { education, educationDept, age, employeeStatus, leveldua, levelFamily, levelTiga, levelEmpat, levelTraining, employees, retired, pkb, dashboardOnline, archiveCareerPath };
+async function unarchiveCareerPath(id) {
+  const rowId = Number(id);
+  if (!Number.isInteger(rowId) || rowId <= 0) throw httpError(400, 'Id career path tidak valid');
+  await execute(
+    'UPDATE BMC.dbo.hris_EmployeeCareerPath SET is_Archive = 0 WHERE Id_CareerPath = @rowId',
+    { rowId }
+  );
+  return { ok: true };
+}
+
+async function deleteCareerPath(id) {
+  const rowId = Number(id);
+  if (!Number.isInteger(rowId) || rowId <= 0) throw httpError(400, 'Id career path tidak valid');
+  await execute(
+    'DELETE FROM BMC.dbo.hris_EmployeeCareerPath WHERE Id_CareerPath = @rowId',
+    { rowId }
+  );
+  return { ok: true };
+}
+
+module.exports = { education, educationDept, age, employeeStatus, leveldua, levelFamily, levelTiga, levelEmpat, levelTraining, employees, retired, pkb, dashboardOnline, archiveCareerPath, unarchiveCareerPath, deleteCareerPath };

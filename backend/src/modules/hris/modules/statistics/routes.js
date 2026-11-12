@@ -67,6 +67,14 @@ function statisticsRouter() {
     res.json(await service.archiveCareerPath(req.params.id));
   }));
 
+  r.patch('/level-three/:id/unarchive', asyncHandler(async (req, res) => {
+    res.json(await service.unarchiveCareerPath(req.params.id));
+  }));
+
+  r.delete('/level-three/:id', asyncHandler(async (req, res) => {
+    res.json(await service.deleteCareerPath(req.params.id));
+  }));
+
   r.get(
     '/level-three/export',
     asyncHandler(async (req, res) => {
